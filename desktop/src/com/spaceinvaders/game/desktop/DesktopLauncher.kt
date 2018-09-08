@@ -8,6 +8,9 @@ object DesktopLauncher {
     @JvmStatic
     fun main(arg: Array<String>) {
         val config = LwjglApplicationConfiguration()
+        config.height = 1000
+        config.width = 1000
+        config.title = "Space Invaders"
         LwjglApplication(SpaceInvaders(), config)
     }
 }
