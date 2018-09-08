@@ -6,17 +6,16 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.screens.GameScreen
 
-class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f){
+class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
 
-    override val texture: Texture = GameScreen.playerTexture
     override lateinit var body: Sprite
     override var speed: Float = 200f
-
-    init {
-        body = Sprite(texture, x.toInt(), y.toInt(), width.toInt(), height.toInt())
-        body.x = x
-        body.y = y
-    }
+        set(value){
+            field = if(value < 0f)
+                0f
+            else
+                value
+        }
 
     override fun move() {
 
@@ -26,6 +25,7 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f){
         else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
             body.x -= Gdx.graphics.deltaTime * speed
         }
+
         if (body.x < 0f)
             body.x = 0f
         else if(body.x > GameScreen.HEIGHT - height)
