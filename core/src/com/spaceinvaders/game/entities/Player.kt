@@ -11,11 +11,18 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
     override lateinit var body: Sprite
     override var speed: Float = 200f
         set(value){
-            field = if(value < 0f)
-                0f
-            else
-                value
+            field = if(value < 0f) 0f else value
         }
+    private val shooter: Shooter = Shooter(300f, 0.5f)
+
+    fun shoot() : Projectile?{
+        shooter.timeSinceLastShoot += Gdx.graphics.deltaTime
+
+        return if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && shooter.canShoot())
+            shooter.shoot(body.x + body.width/2, body.y + body.height)
+        else
+            null
+    }
 
     override fun move() {
 
