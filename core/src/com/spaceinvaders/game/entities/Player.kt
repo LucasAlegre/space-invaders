@@ -13,13 +13,13 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
         set(value){
             field = if(value < 0f) 0f else value
         }
-    private val shooter: Shooter = Shooter(300f, 0.5f)
+    private val shooter: Shooter = Shooter(300f, 0.5f, GameScreen.bluelaserTexture)
 
     fun shoot() : Projectile?{
         shooter.timeSinceLastShoot += Gdx.graphics.deltaTime
 
         return if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && shooter.canShoot())
-            shooter.shoot(body.x + body.width/2, body.y + body.height)
+            shooter.shoot(body.x + body.width/2 - 2.5f, body.y + body.height)
         else
             null
     }
@@ -35,7 +35,7 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
 
         if (body.x < 0f)
             body.x = 0f
-        else if(body.x > GameScreen.HEIGHT - height)
-            body.x = GameScreen.HEIGHT - height
+        else if(body.x > GameScreen.WIDHT - width)
+            body.x = GameScreen.WIDHT - width
     }
 }

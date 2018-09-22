@@ -23,27 +23,30 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         private set
 
     companion object {
-        val WIDHT: Float = 800f
-        val HEIGHT: Float = 800f
+        val WIDHT: Float = Gdx.graphics.width.toFloat()
+        val HEIGHT: Float = Gdx.graphics.height.toFloat()
 
         lateinit var assetManager: AssetManager
         lateinit var playerTexture: Texture
         lateinit var backgroundTexture: Texture
+        lateinit var bluelaserTexture: Texture
         lateinit var diedSound: Sound
     }
 
     init {
         camera = OrthographicCamera()
-        camera.setToOrtho(false, 800f, 800f)
+        camera.setToOrtho(false, GameScreen.WIDHT, GameScreen.HEIGHT)
 
         assetManager = AssetManager()
-        assetManager.load("ufo.png", Texture::class.java)
+        assetManager.load("spaceship.png", Texture::class.java)
         assetManager.load("space.png", Texture::class.java)
         assetManager.load("arco.mp3", Sound::class.java)
+        assetManager.load("bluelaser.png", Texture::class.java)
         assetManager.finishLoading()
-        playerTexture = assetManager.get("ufo.png")
+        playerTexture = assetManager.get("spaceship.png")
         backgroundTexture = assetManager.get("space.png")
         diedSound = assetManager.get("arco.mp3")
+        bluelaserTexture = assetManager.get("bluelaser.png")
 
         gameLogic = GameLogic()
     }
