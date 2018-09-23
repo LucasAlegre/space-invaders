@@ -15,6 +15,7 @@ class SpaceInvaders : Game() {
         batch = SpriteBatch()
         // use LibGDX's default Arial font
         font = BitmapFont()
+        font.data.setScale(2f,2f)
         this.setScreen(GameScreen(this))
     }
 

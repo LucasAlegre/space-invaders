@@ -71,7 +71,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         for(element in gameLogic.getAllElements())
             game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
-        game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, WIDHT - 5)
+        game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
 
         game.batch.end()
     }

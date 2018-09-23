@@ -4,6 +4,8 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
+import com.spaceinvaders.game.GameLogic
+import com.spaceinvaders.game.InputHandler .*
 import com.spaceinvaders.game.screens.GameScreen
 
 class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
@@ -18,7 +20,7 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
     fun shoot() : Projectile?{
         shooter.timeSinceLastShoot += Gdx.graphics.deltaTime
 
-        return if(Gdx.input.isKeyPressed(Input.Keys.SPACE) && shooter.canShoot())
+        return if(GameLogic.inputHandler.shoot() && shooter.canShoot())
             shooter.shoot(body.x + body.width/2 - 2.5f, body.y + body.height)
         else
             null
@@ -26,12 +28,8 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
 
     override fun move() {
 
-        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
-            body.x += Gdx.graphics.deltaTime * speed
-        }
-        else if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
-            body.x -= Gdx.graphics.deltaTime * speed
-        }
+        body.x += Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.moveRight()
+        body.x -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.moveLeft()
 
         if (body.x < 0f)
             body.x = 0f
