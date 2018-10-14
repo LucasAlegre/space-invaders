@@ -4,50 +4,91 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Rectangle
-import com.spaceinvaders.game.InputHandler.InputAndroid
-import com.spaceinvaders.game.InputHandler.InputDesktop
-import com.spaceinvaders.game.InputHandler.InputHandler
+import com.spaceinvaders.game.input.InputAndroid
+import com.spaceinvaders.game.input.InputDesktop
+import com.spaceinvaders.game.input.InputHandler
 import com.spaceinvaders.game.entities.Entity
 import com.spaceinvaders.game.entities.Player
 import com.spaceinvaders.game.entities.Projectile
 import com.spaceinvaders.game.screens.GameScreen
 
+import kotlin.concurrent.thread
+import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.sync.Mutex
+import kotlinx.coroutines.experimental.sync.withLock
+
 class GameLogic {
 
     val enemies: MutableList<Entity> = mutableListOf<Entity>()
     val player: Player = Player()
-    val projectiles: MutableList<Projectile> = mutableListOf<Projectile>()
-    var lives: Int = 3
+    val playerProjectiles: MutableList<Projectile> = mutableListOf()
+    val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
+    var lifes: Int = 3
     var score: Int = 0
+    val scoreMutex: Mutex = Mutex()
 
     companion object {
         lateinit var inputHandler: InputHandler
     }
 
     init {
-        if (Gdx.app.type == Application.ApplicationType.Desktop)
-            inputHandler = InputDesktop()
+        inputHandler = if (Gdx.app.type == Application.ApplicationType.Desktop)
+            InputDesktop()
         else
-            inputHandler = InputAndroid()
+            InputAndroid()
     }
 
     fun update(){
-        var p: Projectile? = player.shoot()
-        if (p != null) projectiles.add(p)
 
         player.move()
-        projectiles.removeAll { it.shouldDelete }
-        for(p in projectiles) {
-            p.move()
-            if(player.collides(p)){
-                GameScreen.diedSound.play()
-                p.shouldDelete = true
+        val p: Projectile? = player.shoot()
+        if (p != null) {
+            playerProjectiles.add(p)
+            GameScreen.shotSound.play()
+        }
+
+        for(e in enemies) {
+            e.move()
+           // val p: Projectile? = e.shoot()
+           // if(p != null) enemiesProjectiles.add(p)
+        }
+
+        playerProjectiles.removeAll { it.shouldDelete }
+        enemiesProjectiles.removeAll { it.shouldDelete }
+
+        runBlocking {
+            launch {
+                for (p in enemiesProjectiles) {
+                    p.move()
+                    if (player.collides(p)) {
+                        //GameScreen.diedSound.play()
+                        scoreMutex.withLock {
+                            score -= 100
+                        }
+                        player.resetPosition()
+                        p.shouldDelete = true
+                    }
+                }
+            }
+            launch {
+                for (p in playerProjectiles) {
+                    p.move()
+                    for (e in enemies) {
+                        if (e.collides(p)) {
+                            scoreMutex.withLock {
+                                //score += e.score
+                            }
+                            //e.shouldDelete = true
+                            p.shouldDelete = true
+                        }
+                    }
+                }
             }
         }
     }
 
     fun getAllElements(): List<Entity>{
-        return enemies + projectiles + player
+        return enemies + playerProjectiles + enemiesProjectiles + player
     }
 }
 

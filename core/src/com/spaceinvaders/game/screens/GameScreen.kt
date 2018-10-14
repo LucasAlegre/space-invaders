@@ -31,6 +31,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var backgroundTexture: Texture
         lateinit var bluelaserTexture: Texture
         lateinit var diedSound: Sound
+        lateinit var shotSound: Sound
     }
 
     init {
@@ -40,13 +41,15 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         assetManager = AssetManager()
         assetManager.load("spaceship.png", Texture::class.java)
         assetManager.load("space.png", Texture::class.java)
-        assetManager.load("arco.mp3", Sound::class.java)
         assetManager.load("bluelaser.png", Texture::class.java)
+        assetManager.load("lasershot.wav", Sound::class.java)
+        //assetManager.load("dead.wav", Sound::class.java)
         assetManager.finishLoading()
         playerTexture = assetManager.get("spaceship.png")
         backgroundTexture = assetManager.get("space.png")
-        diedSound = assetManager.get("arco.mp3")
         bluelaserTexture = assetManager.get("bluelaser.png")
+        //diedSound = assetManager.get("dead.wav")
+        shotSound = assetManager.get("lasershot.wav")
 
         gameLogic = GameLogic()
     }
@@ -58,20 +61,16 @@ class GameScreen(val game : SpaceInvaders) : Screen {
 
         camera.update()
         game.batch.setProjectionMatrix(camera.combined)
-
         game.batch.begin()
-
         game.batch.disableBlending()
         game.batch.draw(backgroundTexture, 0f, 0f, WIDHT, HEIGHT)
-
         gameLogic.update()
-
         game.batch.enableBlending()
 
         for(element in gameLogic.getAllElements())
             game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
-        game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
+        game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
 
         game.batch.end()
     }
@@ -84,5 +83,6 @@ class GameScreen(val game : SpaceInvaders) : Screen {
 
     override fun dispose() {
         assetManager.dispose()
+        game.screen = MenuScreen(game)
     }
 }

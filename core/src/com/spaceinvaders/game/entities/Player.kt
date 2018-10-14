@@ -5,7 +5,7 @@ import com.badlogic.gdx.Input
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.GameLogic
-import com.spaceinvaders.game.InputHandler .*
+import com.spaceinvaders.game.input.*
 import com.spaceinvaders.game.screens.GameScreen
 
 class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
@@ -28,12 +28,30 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
 
     override fun move() {
 
-        body.x += Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.moveRight()
-        body.x -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.moveLeft()
+        if(GameLogic.inputHandler.moveRight())
+            body.x += Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.horizontalSpeed()
+        else if(GameLogic.inputHandler.moveLeft())
+            body.x -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.horizontalSpeed()
+
+        if(GameLogic.inputHandler.moveUp())
+            body.y += Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.verticalSpeed()
+        else if(GameLogic.inputHandler.moveDown())
+            body.y -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.verticalSpeed()
 
         if (body.x < 0f)
             body.x = 0f
         else if(body.x > GameScreen.WIDHT - width)
             body.x = GameScreen.WIDHT - width
+
+        if (body.y < 0f)
+            body.y = 0f
+        else if(body.y > GameScreen.HEIGHT - height)
+            body.y = GameScreen.HEIGHT - height
+
+    }
+
+    fun resetPosition(){
+        body.x = GameScreen.WIDHT/2 - 50
+        body.y = 0f
     }
 }

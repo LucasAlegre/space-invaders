@@ -1,6 +1,6 @@
 buildscript {
 
-    ext.kotlinVersion = '1.2.61'
+    ext.kotlinVersion = '1.2.70'
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -16,9 +16,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.0'
-        
-
     }
+
 }
 
 allprojects {
@@ -55,12 +54,15 @@ project(":desktop") {
         compile "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
         compile "com.badlogicgames.gdx:gdx-controllers-desktop:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-platform:$gdxVersion:natives-desktop"
+
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
     }
 }
 
 project(":android") {
     apply plugin: "android"
     apply plugin: "kotlin-android"
+    apply plugin: 'kotlin-android-extensions'
 
     configurations { natives }
 
@@ -80,6 +82,8 @@ project(":android") {
         natives "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-x86_64"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers-android:$gdxVersion"
+
+        compile 'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.30.2'
         
     }
 }
@@ -93,8 +97,12 @@ project(":core") {
         compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-controllers:$gdxVersion"
         compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+
+        implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.30.2'
+        compile "org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.30.2"
     }
 }
+
 
 tasks.eclipse.doLast {
     delete ".project"

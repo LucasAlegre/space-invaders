@@ -1,10 +1,12 @@
 package com.spaceinvaders.game
 
 import com.badlogic.gdx.Game
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.spaceinvaders.game.screens.GameScreen
+import com.spaceinvaders.game.screens.MenuScreen
 
 class SpaceInvaders : Game() {
 
@@ -16,7 +18,7 @@ class SpaceInvaders : Game() {
         // use LibGDX's default Arial font
         font = BitmapFont()
         font.data.setScale(2f,2f)
-        this.setScreen(GameScreen(this))
+        this.setScreen(MenuScreen(this))
     }
 
     override fun render() {
