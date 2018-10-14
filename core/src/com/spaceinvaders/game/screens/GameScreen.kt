@@ -16,13 +16,13 @@ import javax.xml.soap.Text
 
 class GameScreen(val game : SpaceInvaders) : Screen {
 
-    var camera: OrthographicCamera
-        private set
-
-    var gameLogic: GameLogic
-        private set
+    private var gameLogic: GameLogic
 
     companion object {
+
+        lateinit var camera: OrthographicCamera
+            private set
+
         val WIDHT: Float = Gdx.graphics.width.toFloat()
         val HEIGHT: Float = Gdx.graphics.height.toFloat()
 

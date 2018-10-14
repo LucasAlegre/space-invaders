@@ -51,7 +51,6 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
     }
 
     fun resetPosition(){
-        body.x = GameScreen.WIDHT/2 - 50
-        body.y = 0f
+        body.setPosition(GameScreen.WIDHT/2 - 50, 0f)
     }
 }

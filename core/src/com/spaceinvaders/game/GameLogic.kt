@@ -19,7 +19,7 @@ import kotlinx.coroutines.experimental.sync.withLock
 
 class GameLogic {
 
-    val enemies: MutableList<Entity> = mutableListOf<Entity>()
+    val enemies: MutableList<Entity> = mutableListOf()
     val player: Player = Player()
     val playerProjectiles: MutableList<Projectile> = mutableListOf()
     val enemiesProjectiles: MutableList<Projectile> = mutableListOf()

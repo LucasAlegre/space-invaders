@@ -11,8 +11,7 @@ abstract class Entity(val x: Float, val y: Float, val width: Float, val height: 
 
     init {
         body = Sprite(texture, 0,0, width.toInt(), height.toInt())
-        body.x = x
-        body.y = y
+        body.setPosition(x, y)
     }
 
     abstract fun move()
