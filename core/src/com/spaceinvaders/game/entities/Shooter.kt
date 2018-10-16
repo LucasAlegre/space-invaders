@@ -17,6 +17,11 @@ class Shooter(val shootSpeed: Float, val shootDelay: Float, val shootTexture: Te
         return Projectile(x, y, shootSpeed, shootTexture)
     }
 
+    fun shoot(x: Float, y: Float, direction: Int): Projectile {
+        timeSinceLastShoot = 0f
+        return Projectile(x, y, shootSpeed, shootTexture, direction)
+    }
+
     override fun canShoot(): Boolean{
         return timeSinceLastShoot > shootDelay
     }
