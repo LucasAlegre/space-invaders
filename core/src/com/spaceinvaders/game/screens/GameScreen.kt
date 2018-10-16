@@ -30,6 +30,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var playerTexture: Texture
         lateinit var backgroundTexture: Texture
         lateinit var bluelaserTexture: Texture
+        lateinit var redlaserTexture: Texture
         lateinit var diedSound: Sound
         lateinit var shotSound: Sound
     }
@@ -42,12 +43,14 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         assetManager.load("spaceship.png", Texture::class.java)
         assetManager.load("space.png", Texture::class.java)
         assetManager.load("bluelaser.png", Texture::class.java)
+        assetManager.load("redlaser.png", Texture::class.java)
         assetManager.load("lasershot.wav", Sound::class.java)
         //assetManager.load("dead.wav", Sound::class.java)
         assetManager.finishLoading()
         playerTexture = assetManager.get("spaceship.png")
         backgroundTexture = assetManager.get("space.png")
         bluelaserTexture = assetManager.get("bluelaser.png")
+        redlaserTexture = assetManager.get("redlaser.png")
         //diedSound = assetManager.get("dead.wav")
         shotSound = assetManager.get("lasershot.wav")
 
