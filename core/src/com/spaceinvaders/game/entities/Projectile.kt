@@ -7,14 +7,18 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.screens.GameScreen
 
-class Projectile(x: Float, y: Float, speed: Float, texture: Texture) : Entity(x=x, y=y, width = 5f, height = 10f, texture = texture){
+class Projectile(x: Float, y: Float, speed: Float, texture: Texture, direction: Int=1) : Entity(x=x, y=y, width = 5f, height = 10f, texture = texture){
 
     override lateinit var body: Sprite
     override var speed: Float = speed
     var shouldDelete: Boolean = false
 
+    // Negative value makes projectile go down
+    // Positive value makes projectile go up (default)
+    var direction: Int = direction
+
     override fun move() {
-        body.y += speed * Gdx.graphics.deltaTime
+        body.y += speed * Gdx.graphics.deltaTime * direction
 
         if(body.y > GameScreen.HEIGHT || body.y < 0)
             shouldDelete = true
