@@ -10,7 +10,6 @@ import com.spaceinvaders.game.screens.GameScreen
 
 class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
 
-    override lateinit var body: Sprite
     override var speed: Float = 200f
         set(value){
             field = if(value < 0f) 0f else value
@@ -38,16 +37,11 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
         else if(GameLogic.inputHandler.moveDown())
             body.y -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.verticalSpeed()
 
-        if (body.x < 0f)
-            body.x = 0f
-        else if(body.x > GameScreen.WIDHT - width)
-            body.x = GameScreen.WIDHT - width
+        hasReachedLeftLimit()
+        hasReachedRightLimit()
 
-        if (body.y < 0f)
-            body.y = 0f
-        else if(body.y > GameScreen.HEIGHT - height)
-            body.y = GameScreen.HEIGHT - height
-
+        hasReachedBottomLimit()
+        hasReachedUpperLimit()
     }
 
     fun resetPosition(){

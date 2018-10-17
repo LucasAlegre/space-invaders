@@ -9,7 +9,6 @@ import com.spaceinvaders.game.screens.GameScreen
 
 class Projectile(x: Float, y: Float, speed: Float, texture: Texture, direction: Int=1) : Entity(x=x, y=y, width = 5f, height = 10f, texture = texture){
 
-    override lateinit var body: Sprite
     override var speed: Float = speed
     var shouldDelete: Boolean = false
 
