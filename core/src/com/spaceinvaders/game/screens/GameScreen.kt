@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.GameLogic
 import com.spaceinvaders.game.SpaceInvaders
 import com.spaceinvaders.game.entities.Player
-import javax.xml.soap.Text
+//import javax.xml.soap.Text
 
 
 class GameScreen(val game : SpaceInvaders) : Screen {
@@ -31,6 +31,10 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var backgroundTexture: Texture
         lateinit var bluelaserTexture: Texture
         lateinit var redlaserTexture: Texture
+        lateinit var squidTexture: Texture
+        lateinit var crabTexture: Texture
+        lateinit var octopusTexture: Texture
+        lateinit var ufoTexture: Texture
         lateinit var diedSound: Sound
         lateinit var shotSound: Sound
     }
@@ -44,6 +48,10 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         assetManager.load("space.png", Texture::class.java)
         assetManager.load("bluelaser.png", Texture::class.java)
         assetManager.load("redlaser.png", Texture::class.java)
+        assetManager.load("squid.png", Texture::class.java)
+        assetManager.load("crab.png", Texture::class.java)
+        assetManager.load("octopus.png", Texture::class.java)
+        assetManager.load("ufo2.png", Texture::class.java)
         assetManager.load("lasershot.wav", Sound::class.java)
         //assetManager.load("dead.wav", Sound::class.java)
         assetManager.finishLoading()
@@ -51,6 +59,10 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         backgroundTexture = assetManager.get("space.png")
         bluelaserTexture = assetManager.get("bluelaser.png")
         redlaserTexture = assetManager.get("redlaser.png")
+        squidTexture = assetManager.get("squid.png")
+        crabTexture = assetManager.get("crab.png")
+        octopusTexture = assetManager.get("octopus.png")
+        ufoTexture = assetManager.get("ufo2.png")
         //diedSound = assetManager.get("dead.wav")
         shotSound = assetManager.get("lasershot.wav")
 

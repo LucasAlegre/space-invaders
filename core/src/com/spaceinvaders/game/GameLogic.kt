@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.Input
 import com.badlogic.gdx.math.Rectangle
+import com.spaceinvaders.game.entities.Enemy
 import com.spaceinvaders.game.input.InputAndroid
 import com.spaceinvaders.game.input.InputDesktop
 import com.spaceinvaders.game.input.InputHandler
@@ -19,7 +20,7 @@ import kotlinx.coroutines.experimental.sync.withLock
 
 class GameLogic {
 
-    val enemies: MutableList<Entity> = mutableListOf()
+    val enemies: MutableList<Enemy> = mutableListOf()
     val player: Player = Player()
     val playerProjectiles: MutableList<Projectile> = mutableListOf()
     val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
@@ -49,8 +50,8 @@ class GameLogic {
 
         for(e in enemies) {
             e.move()
-           // val p: Projectile? = e.shoot()
-           // if(p != null) enemiesProjectiles.add(p)
+            val p: Projectile? = e.shoot()
+            if(p != null) enemiesProjectiles.add(p)
         }
 
         playerProjectiles.removeAll { it.shouldDelete }
@@ -75,10 +76,14 @@ class GameLogic {
                     p.move()
                     for (e in enemies) {
                         if (e.collides(p)) {
-                            scoreMutex.withLock {
-                                //score += e.score
+                            e.takeShot()
+
+                            if(e.shouldDelete) {
+                                scoreMutex.withLock {
+                                    score += e.score
+                                }
                             }
-                            //e.shouldDelete = true
+
                             p.shouldDelete = true
                         }
                     }
