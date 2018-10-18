@@ -1,13 +1,10 @@
 package com.spaceinvaders.game.entities
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.Screen
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.screens.GameScreen
 
-class Projectile(x: Float, y: Float, speed: Float, texture: Texture, direction: Int=1) : Entity(x=x, y=y, width = 5f, height = 10f, texture = texture){
+class Projectile(x: Float, y: Float, speed: Float, texture: Texture, direction: Int=1) : Entity(originX=x, originY=y, width = 5f, height = 10f, texture = texture){
 
     override var speed: Float = speed
     var shouldDelete: Boolean = false

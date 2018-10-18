@@ -2,17 +2,16 @@ package com.spaceinvaders.game.entities
 
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
-import com.badlogic.gdx.math.Rectangle
 import com.spaceinvaders.game.screens.GameScreen
 
-abstract class Entity(val x: Float, val y: Float, val width: Float, val height: Float, val texture: Texture){
+abstract class Entity(val originX: Float, val originY: Float, val width: Float, val height: Float, val texture: Texture){
 
     var body: Sprite
     abstract var speed: Float
 
     init {
         body = Sprite(texture, 0,0, width.toInt(), height.toInt())
-        body.setPosition(x, y)
+        body.setPosition(originX, originY)
     }
 
     abstract fun move()
@@ -26,7 +25,6 @@ abstract class Entity(val x: Float, val y: Float, val width: Float, val height: 
             body.x = 0f
             return true
         }
-
         return false
     }
 
@@ -35,7 +33,6 @@ abstract class Entity(val x: Float, val y: Float, val width: Float, val height: 
             body.x = GameScreen.WIDHT - width
             return true
         }
-
         return false
     }
 
@@ -44,7 +41,6 @@ abstract class Entity(val x: Float, val y: Float, val width: Float, val height: 
             body.y = 0f
             return true
         }
-
         return false
     }
 
@@ -53,7 +49,6 @@ abstract class Entity(val x: Float, val y: Float, val width: Float, val height: 
             body.y = GameScreen.HEIGHT - height
             return true
         }
-
         return false
     }
 }

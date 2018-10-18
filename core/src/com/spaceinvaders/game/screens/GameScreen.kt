@@ -7,10 +7,9 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.spaceinvaders.game.GameLogic
+import com.spaceinvaders.game.logic.GameLogic
 import com.spaceinvaders.game.SpaceInvaders
-import com.spaceinvaders.game.entities.Player
+
 //import javax.xml.soap.Text
 
 

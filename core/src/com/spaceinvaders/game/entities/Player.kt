@@ -1,14 +1,10 @@
 package com.spaceinvaders.game.entities
 
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.graphics.Texture
-import com.badlogic.gdx.graphics.g2d.Sprite
-import com.spaceinvaders.game.GameLogic
-import com.spaceinvaders.game.input.*
+import com.spaceinvaders.game.logic.GameLogic
 import com.spaceinvaders.game.screens.GameScreen
 
-class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
+class Player : Entity(originX=GameScreen.WIDHT/2 - 50, originY=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
 
     override var speed: Float = 200f
         set(value){
@@ -45,6 +41,6 @@ class Player : Entity(x=GameScreen.WIDHT/2 - 50, y=0f, width=100f, height=100f, 
     }
 
     fun resetPosition(){
-        body.setPosition(GameScreen.WIDHT/2 - 50, 0f)
+        body.setPosition(originX, originY)
     }
 }

@@ -1,26 +1,20 @@
-package com.spaceinvaders.game
+package com.spaceinvaders.game.logic
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.Input
-import com.badlogic.gdx.math.Rectangle
-import com.spaceinvaders.game.entities.Enemy
+import com.spaceinvaders.game.entities.*
 import com.spaceinvaders.game.input.InputAndroid
 import com.spaceinvaders.game.input.InputDesktop
 import com.spaceinvaders.game.input.InputHandler
-import com.spaceinvaders.game.entities.Entity
-import com.spaceinvaders.game.entities.Player
-import com.spaceinvaders.game.entities.Projectile
 import com.spaceinvaders.game.screens.GameScreen
 
-import kotlin.concurrent.thread
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.sync.Mutex
 import kotlinx.coroutines.experimental.sync.withLock
 
 class GameLogic {
 
-    val enemies: MutableList<Enemy> = mutableListOf()
+    val enemies: MutableList<Enemy> = mutableListOf(Squid(500f,500f), UFO(500f), Crab(500f, 500f))
     val player: Player = Player()
     val playerProjectiles: MutableList<Projectile> = mutableListOf()
     val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
@@ -56,6 +50,7 @@ class GameLogic {
 
         playerProjectiles.removeAll { it.shouldDelete }
         enemiesProjectiles.removeAll { it.shouldDelete }
+        enemies.removeAll { it.shouldDelete }
 
         runBlocking {
             launch {
