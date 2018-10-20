@@ -22,8 +22,8 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var camera: OrthographicCamera
             private set
 
-        val WIDHT: Float = Gdx.graphics.width.toFloat()
-        val HEIGHT: Float = Gdx.graphics.height.toFloat()
+        val WIDHT: Float = 800f
+        val HEIGHT: Float = 800f
 
         lateinit var assetManager: AssetManager
         lateinit var playerTexture: Texture
@@ -84,7 +84,12 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         for(element in gameLogic.getAllElements())
             game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
-        game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
+        game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
+        for(i in 1..gameLogic.lifes){
+            game.batch.draw(playerTexture, WIDHT - i*40f, HEIGHT - 40f, 40f, 40f)
+        }
+
+        //game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
 
         game.batch.end()
     }

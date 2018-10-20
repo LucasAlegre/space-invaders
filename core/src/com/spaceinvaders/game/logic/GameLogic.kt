@@ -61,6 +61,7 @@ class GameLogic {
                         scoreMutex.withLock {
                             score -= 100
                         }
+                        lifes--
                         player.resetPosition()
                         p.shouldDelete = true
                     }
