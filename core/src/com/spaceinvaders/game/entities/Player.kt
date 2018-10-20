@@ -4,13 +4,13 @@ import com.badlogic.gdx.Gdx
 import com.spaceinvaders.game.logic.GameLogic
 import com.spaceinvaders.game.screens.GameScreen
 
-class Player : Entity(originX=GameScreen.WIDHT/2 - 50, originY=0f, width=100f, height=100f, texture = GameScreen.playerTexture){
+class Player : Entity(originX=GameScreen.WIDHT/2 - 50, originY=0f, width=60f, height=60f, texture = GameScreen.playerTexture){
 
     override var speed: Float = 200f
         set(value){
             field = if(value < 0f) 0f else value
         }
-    private val shooter: Shooter = Shooter(300f, 0.5f, GameScreen.bluelaserTexture)
+    private val shooter: Shooter = Shooter(300f, 0.5f, GameScreen.bluelaserTexture, 0f)
 
     fun shoot() : Projectile?{
         shooter.timeSinceLastShoot += Gdx.graphics.deltaTime

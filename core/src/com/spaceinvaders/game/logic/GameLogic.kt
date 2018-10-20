@@ -14,13 +14,14 @@ import kotlinx.coroutines.experimental.sync.withLock
 
 class GameLogic {
 
-    val enemies: MutableList<Enemy> = mutableListOf(Squid(500f,500f), UFO(500f), Crab(500f, 500f))
+    val enemies: MutableList<Enemy> = mutableListOf()
     val player: Player = Player()
     val playerProjectiles: MutableList<Projectile> = mutableListOf()
     val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
     var lifes: Int = 3
     var score: Int = 0
     val scoreMutex: Mutex = Mutex()
+    var timeSinceLastUFO: Float = 0f
 
     companion object {
         lateinit var inputHandler: InputHandler
@@ -33,6 +34,53 @@ class GameLogic {
             InputAndroid()
     }
 
+    fun initialEnemies(){
+        enemies.add(Squid(100f, 400f, 1f))
+        enemies.add(Squid(200f, 400f, 4f))
+        enemies.add(Squid(300f, 400f, 2f))
+        enemies.add(Squid(400f, 400f, 0f))
+        enemies.add(Squid(500f, 400f, 3f))
+
+        enemies.add(Squid(100f, 500f, 3f))
+        enemies.add(Squid(200f, 500f, 2f))
+        enemies.add(Squid(300f, 500f, 0f))
+        enemies.add(Squid(400f, 500f, 4f))
+        enemies.add(Squid(500f, 500f, 1f))
+
+        enemies.add(Crab(100f, 600f, 1f))
+        enemies.add(Crab(300f, 600f, 2f))
+        enemies.add(Crab(500f, 600f, 0f))
+    }
+
+    fun updateEnemies(){
+        timeSinceLastUFO += Gdx.graphics.deltaTime;
+
+        if(enemies.isEmpty()) {
+            initialEnemies()
+        }
+
+        if(timeSinceLastUFO>10f){
+            enemies.add(UFO(600f))
+            timeSinceLastUFO = 0f
+        }
+
+        if(score < 500 && enemies.size < 8){
+            enemies.add(Squid())
+            enemies.add(Squid())
+            enemies.add(Squid())
+        }
+        else if(score > 500 && score < 2000 && enemies.size < 10){
+            enemies.add(Crab())
+            enemies.add(Crab())
+            enemies.add(Squid())
+        }
+        else if(enemies.size < 8){
+            enemies.add(Octopus())
+            enemies.add(Octopus())
+            enemies.add(Crab())
+        }
+    }
+
     fun update(){
 
         player.move()
@@ -41,6 +89,8 @@ class GameLogic {
             playerProjectiles.add(p)
             GameScreen.shotSound.play()
         }
+
+        updateEnemies()
 
         for(e in enemies) {
             e.move()

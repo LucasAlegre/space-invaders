@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Texture
 import com.spaceinvaders.game.screens.GameScreen
 
-abstract class Enemy(x: Float, y: Float, width: Float, height: Float, texture: Texture, speed: Float, score: Int, lives: Int, shootDelay: Float) : Entity(originX=x, originY=y, width=width, height=height, texture=texture){
+abstract class Enemy(x: Float, y: Float, width: Float, height: Float, texture: Texture, speed: Float, score: Int, lives: Int, shootDelay: Float, timeInit: Float) : Entity(originX=x, originY=y, width=width, height=height, texture=texture){
 
     override var speed: Float = speed
         set(value) {
@@ -40,7 +40,7 @@ abstract class Enemy(x: Float, y: Float, width: Float, height: Float, texture: T
 
     var shouldDelete: Boolean = false
 
-    private val shooter: Shooter = Shooter(speed, shootDelay, GameScreen.redlaserTexture)
+    private val shooter: Shooter = Shooter(speed, shootDelay, GameScreen.redlaserTexture, timeInit)
 
     open fun shoot() : Projectile? {
         shooter.timeSinceLastShoot += Gdx.graphics.deltaTime
