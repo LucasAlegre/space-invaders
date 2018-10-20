@@ -28,12 +28,12 @@ abstract class Enemy(x: Float, y: Float, width: Float, height: Float, texture: T
                 field = value
         }
 
-    protected var verticalDirection: Int = -1
+    protected var verticalDirection: Int = -5
         set(value) {
-            if(value < -1)
-                field = -1
-            else if(value > 1)
-                field = 1
+            if(value < -5)
+                field = -5
+            else if(value > 5)
+                field = 5
             else
                 field = value
         }
@@ -76,7 +76,7 @@ abstract class Enemy(x: Float, y: Float, width: Float, height: Float, texture: T
 
     override fun hasReachedBottomLimit(): Boolean {
         if(body.y < 130f) {
-            verticalDirection = 1
+            verticalDirection = 5
             return true
         }
 
@@ -85,7 +85,7 @@ abstract class Enemy(x: Float, y: Float, width: Float, height: Float, texture: T
 
     override fun hasReachedUpperLimit(): Boolean {
         if(super.hasReachedUpperLimit()) {
-            verticalDirection = -1
+            verticalDirection = -5
             return true
         }
 
