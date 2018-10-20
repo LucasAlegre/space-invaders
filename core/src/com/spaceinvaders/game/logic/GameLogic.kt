@@ -14,14 +14,14 @@ import kotlinx.coroutines.experimental.sync.withLock
 
 class GameLogic {
 
-    val enemies: MutableList<Enemy> = mutableListOf()
-    val player: Player = Player()
-    val playerProjectiles: MutableList<Projectile> = mutableListOf()
-    val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
+    private val enemies: MutableList<Enemy> = mutableListOf()
+    private val player: Player = Player()
+    private val playerProjectiles: MutableList<Projectile> = mutableListOf()
+    private val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
+    private val scoreMutex: Mutex = Mutex()
+    private var timeSinceLastUFO: Float = 0f
     var lifes: Int = 3
     var score: Int = 0
-    val scoreMutex: Mutex = Mutex()
-    var timeSinceLastUFO: Float = 0f
 
     companion object {
         lateinit var inputHandler: InputHandler
@@ -34,7 +34,7 @@ class GameLogic {
             InputAndroid()
     }
 
-    fun initialEnemies(){
+    private fun initialEnemies(){
         enemies.add(Squid(100f, 400f, 1f))
         enemies.add(Squid(200f, 400f, 4f))
         enemies.add(Squid(300f, 400f, 2f))
@@ -52,14 +52,14 @@ class GameLogic {
         enemies.add(Crab(500f, 600f, 0f))
     }
 
-    fun updateEnemies(){
+    private fun updateEnemies(){
         timeSinceLastUFO += Gdx.graphics.deltaTime;
 
         if(enemies.isEmpty()) {
             initialEnemies()
         }
 
-        if(timeSinceLastUFO>10f){
+        if(timeSinceLastUFO > 10f){
             enemies.add(UFO(600f))
             timeSinceLastUFO = 0f
         }
@@ -69,7 +69,7 @@ class GameLogic {
             enemies.add(Squid())
             enemies.add(Squid())
         }
-        else if(score > 500 && score < 2000 && enemies.size < 10){
+        else if(score in 501..2000 && enemies.size < 10){
             enemies.add(Crab())
             enemies.add(Crab())
             enemies.add(Squid())
@@ -78,10 +78,11 @@ class GameLogic {
             enemies.add(Octopus())
             enemies.add(Octopus())
             enemies.add(Crab())
+            enemies.add(Squid())
         }
     }
 
-    fun update(){
+    fun update() {
 
         player.move()
         val p: Projectile? = player.shoot()
@@ -92,10 +93,16 @@ class GameLogic {
 
         updateEnemies()
 
-        for(e in enemies) {
+        for (e in enemies) {
             e.move()
+            if(e.collides(player)) {
+                score -= 100
+                lifes--
+                player.resetPosition()
+                GameScreen.diedSound.play()
+            }
             val p: Projectile? = e.shoot()
-            if(p != null) enemiesProjectiles.add(p)
+            if (p != null) enemiesProjectiles.add(p)
         }
 
         playerProjectiles.removeAll { it.shouldDelete }
@@ -104,35 +111,42 @@ class GameLogic {
 
         runBlocking {
             launch {
-                for (p in enemiesProjectiles) {
-                    p.move()
-                    if (player.collides(p)) {
-                        //GameScreen.diedSound.play()
-                        scoreMutex.withLock {
-                            score -= 100
-                        }
-                        lifes--
-                        player.resetPosition()
-                        p.shouldDelete = true
-                    }
-                }
+                enemiesProjectilesCollisions()
             }
             launch {
-                for (p in playerProjectiles) {
-                    p.move()
-                    for (e in enemies) {
-                        if (e.collides(p)) {
-                            e.takeShot()
+                playerProjectilesCollisions()
+            }
+        }
+    }
 
-                            if(e.shouldDelete) {
-                                scoreMutex.withLock {
-                                    score += e.score
-                                }
-                            }
+    private suspend fun enemiesProjectilesCollisions(){
+        for (p in enemiesProjectiles) {
+            p.move()
+            if (player.collides(p)) {
+                scoreMutex.withLock {
+                    score -= 100
+                }
+                lifes--
+                player.resetPosition()
+                GameScreen.diedSound.play()
+                p.shouldDelete = true
+            }
+        }
+    }
 
-                            p.shouldDelete = true
+    private suspend fun playerProjectilesCollisions(){
+        for (p in playerProjectiles) {
+            p.move()
+            for (e in enemies) {
+                if (e.collides(p)) {
+                    e.takeShot()
+                    if (e.shouldDelete) {
+                        scoreMutex.withLock {
+                            score += e.score
                         }
+                        GameScreen.killSound.play()
                     }
+                    p.shouldDelete = true
                 }
             }
         }

@@ -42,7 +42,7 @@ class EndScreen(val game: SpaceInvaders, val score : Int) : Screen {
             font.color = Color.BLACK
             this
         })
-        playButton.setPosition(GameScreen.WIDHT/2 - 100,GameScreen.HEIGHT/2)
+        playButton.setPosition(Gdx.graphics.width/2f - 100f,Gdx.graphics.height/2f)
         playButton.addListener(object : ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 menuSong.stop()
@@ -60,10 +60,6 @@ class EndScreen(val game: SpaceInvaders, val score : Int) : Screen {
 
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
-
-        stage.batch.begin()
-        stage.batch.draw(textureBackground, 0f, 0f, GameScreen.WIDHT, GameScreen.HEIGHT)
-        stage.batch.end()
 
         game.batch.begin()
         game.batch.disableBlending()

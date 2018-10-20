@@ -22,8 +22,8 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var camera: OrthographicCamera
             private set
 
-        val WIDHT: Float = 800f
-        val HEIGHT: Float = 800f
+        const val WIDHT: Float = 800f
+        const val HEIGHT: Float = 800f
 
         lateinit var assetManager: AssetManager
         lateinit var playerTexture: Texture
@@ -38,6 +38,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var octopus3Texture: Texture
         lateinit var ufoTexture: Texture
         lateinit var diedSound: Sound
+        lateinit var killSound: Sound
         lateinit var shotSound: Sound
     }
 
@@ -57,8 +58,9 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         assetManager.load("octopus2.png", Texture::class.java)
         assetManager.load("octopus3.png", Texture::class.java)
         assetManager.load("ufo2.png", Texture::class.java)
-        assetManager.load("lasershot.wav", Sound::class.java)
-        //assetManager.load("dead.wav", Sound::class.java)
+        assetManager.load("shot.mp3", Sound::class.java)
+        assetManager.load("kill.wav", Sound::class.java)
+        assetManager.load("dead.wav", Sound::class.java)
         assetManager.finishLoading()
         playerTexture = assetManager.get("spaceship.png")
         backgroundTexture = assetManager.get("space.png")
@@ -71,8 +73,9 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         octopus2Texture = assetManager.get("octopus2.png")
         octopus3Texture = assetManager.get("octopus3.png")
         ufoTexture = assetManager.get("ufo2.png")
-        //diedSound = assetManager.get("dead.wav")
-        shotSound = assetManager.get("lasershot.wav")
+        diedSound = assetManager.get("dead.wav")
+        shotSound = assetManager.get("shot.mp3")
+        killSound = assetManager.get("kill.wav")
 
         gameLogic = GameLogic()
     }
@@ -88,7 +91,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         game.batch.disableBlending()
         game.batch.draw(backgroundTexture, 0f, 0f, WIDHT, HEIGHT)
         gameLogic.update()
-        if(gameLogic.lifes>0) {
+        if(gameLogic.lifes > 0) {
             game.batch.enableBlending()
 
             for (element in gameLogic.getAllElements())

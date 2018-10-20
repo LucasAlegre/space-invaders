@@ -5,6 +5,7 @@ import com.badlogic.gdx.Screen
 import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.GL20
+import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.TextureRegion
@@ -18,12 +19,13 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
 class MenuScreen(val game: SpaceInvaders) : Screen {
 
-    private val stage: Stage
+    private val stage: Stage = Stage()
     private val textureBackground: Texture = Texture(Gdx.files.internal("space.png"))
     private val menuSong: Music = Gdx.audio.newMusic(Gdx.files.internal("menusong.wav"))
+    private val camera: OrthographicCamera = OrthographicCamera()
 
     init {
-        stage = Stage()
+        camera.setToOrtho(false, GameScreen.WIDHT, GameScreen.HEIGHT)
         stage.setDebugAll(true)
         Gdx.input.setInputProcessor(stage)
 
@@ -40,7 +42,7 @@ class MenuScreen(val game: SpaceInvaders) : Screen {
             font.color = Color.BLACK
             this
         })
-        playButton.setPosition(GameScreen.WIDHT/2 - 100,GameScreen.HEIGHT/2)
+        playButton.setPosition(Gdx.graphics.width/2f - 100f,Gdx.graphics.height/2f)
         playButton.addListener(object : ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 menuSong.stop()
@@ -59,9 +61,14 @@ class MenuScreen(val game: SpaceInvaders) : Screen {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f)
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT)
 
-        stage.batch.begin()
-        stage.batch.draw(textureBackground, 0f, 0f, GameScreen.WIDHT, GameScreen.HEIGHT)
-        stage.batch.end()
+        camera.update()
+        game.batch.setProjectionMatrix(camera.combined)
+
+        game.batch.begin()
+        game.batch.disableBlending()
+        game.batch.draw(textureBackground, 0f, 0f, GameScreen.WIDHT, GameScreen.HEIGHT)
+        game.batch.enableBlending()
+        game.batch.end()
         stage.draw()
         stage.act()
     }

@@ -5,9 +5,9 @@ import com.spaceinvaders.game.screens.GameScreen
 
 class Octopus(x: Float, y: Float, timeInit: Float): Enemy(x=x, y=y, width=70f, height=70f, texture= GameScreen.octopus3Texture, speed=250f, score=200, lives=3, shootDelay=3f, timeInit=timeInit){
 
-    constructor() : this(listOf(100f,200f,300f,400f,500f,600f,700f).shuffled().first(), listOf(500f,600f).shuffled().first(), listOf(0f,1f,2f).shuffled().first())
+    constructor() : this((100..700 step 100).shuffled().first().toFloat(), (500..600 step 100).shuffled().first().toFloat(), (0..2).shuffled().first().toFloat())
 
-    override open fun takeShot() {
+    override fun takeShot() {
         lives--
         shouldDelete = lives == 0
         if(lives == 2)

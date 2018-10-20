@@ -8,7 +8,7 @@ interface ShooterInterface{
     fun canShoot(): Boolean
 }
 
-class Shooter(val shootSpeed: Float, val shootDelay: Float, val shootTexture: Texture, val timeInit : Float) : ShooterInterface{
+class Shooter(private val shootSpeed: Float, private val shootDelay: Float, private val shootTexture: Texture, timeInit: Float) : ShooterInterface{
 
     var timeSinceLastShoot = timeInit
 
