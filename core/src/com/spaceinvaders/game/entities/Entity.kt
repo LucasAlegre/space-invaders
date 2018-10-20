@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.screens.GameScreen
 
-abstract class Entity(val originX: Float, val originY: Float, val width: Float, val height: Float, val texture: Texture){
+abstract class Entity(val originX: Float, val originY: Float, val width: Float, val height: Float, var texture: Texture){
 
     var body: Sprite
     abstract var speed: Float

@@ -32,7 +32,10 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var redlaserTexture: Texture
         lateinit var squidTexture: Texture
         lateinit var crabTexture: Texture
+        lateinit var crab2Texture: Texture
         lateinit var octopusTexture: Texture
+        lateinit var octopus2Texture: Texture
+        lateinit var octopus3Texture: Texture
         lateinit var ufoTexture: Texture
         lateinit var diedSound: Sound
         lateinit var shotSound: Sound
@@ -49,7 +52,10 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         assetManager.load("redlaser.png", Texture::class.java)
         assetManager.load("squid.png", Texture::class.java)
         assetManager.load("crab.png", Texture::class.java)
+        assetManager.load("crab2.png", Texture::class.java)
         assetManager.load("octopus.png", Texture::class.java)
+        assetManager.load("octopus2.png", Texture::class.java)
+        assetManager.load("octopus3.png", Texture::class.java)
         assetManager.load("ufo2.png", Texture::class.java)
         assetManager.load("lasershot.wav", Sound::class.java)
         //assetManager.load("dead.wav", Sound::class.java)
@@ -60,7 +66,10 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         redlaserTexture = assetManager.get("redlaser.png")
         squidTexture = assetManager.get("squid.png")
         crabTexture = assetManager.get("crab.png")
+        crab2Texture = assetManager.get("crab2.png")
         octopusTexture = assetManager.get("octopus.png")
+        octopus2Texture = assetManager.get("octopus2.png")
+        octopus3Texture = assetManager.get("octopus3.png")
         ufoTexture = assetManager.get("ufo2.png")
         //diedSound = assetManager.get("dead.wav")
         shotSound = assetManager.get("lasershot.wav")
