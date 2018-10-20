@@ -64,17 +64,17 @@ class GameLogic {
             timeSinceLastUFO = 0f
         }
 
-        if(score < 500 && enemies.size < 8){
+        if(score <= 500 && enemies.size < 8){
             enemies.add(Squid())
             enemies.add(Squid())
             enemies.add(Squid())
         }
-        else if(score > 500 && score < 2000 && enemies.size < 10){
+        else if(score > 500 && score <= 2000 && enemies.size < 10){
             enemies.add(Crab())
             enemies.add(Crab())
             enemies.add(Squid())
         }
-        else if(enemies.size < 8){
+        else if(score > 2000 && enemies.size < 8){
             enemies.add(Octopus())
             enemies.add(Octopus())
             enemies.add(Crab())
