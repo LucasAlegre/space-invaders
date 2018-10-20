@@ -23,6 +23,7 @@ class GameLogic {
     var lifes: Int = 3
     var score: Int = 0
 
+
     companion object {
         lateinit var inputHandler: InputHandler
     }
@@ -64,7 +65,7 @@ class GameLogic {
             timeSinceLastUFO = 0f
         }
 
-        if(score < 500 && enemies.size < 8){
+        if(score <= 500 && enemies.size < 8){
             enemies.add(Squid())
             enemies.add(Squid())
             enemies.add(Squid())
@@ -74,7 +75,7 @@ class GameLogic {
             enemies.add(Crab())
             enemies.add(Squid())
         }
-        else if(enemies.size < 8){
+        else if(score > 2000 && enemies.size < 8){
             enemies.add(Octopus())
             enemies.add(Octopus())
             enemies.add(Crab())
