@@ -79,18 +79,21 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         game.batch.disableBlending()
         game.batch.draw(backgroundTexture, 0f, 0f, WIDHT, HEIGHT)
         gameLogic.update()
-        game.batch.enableBlending()
+        if(gameLogic.lifes>0) {
+            game.batch.enableBlending()
 
-        for(element in gameLogic.getAllElements())
-            game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
+            for (element in gameLogic.getAllElements())
+                game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
-        game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
-        for(i in 1..gameLogic.lifes){
-            game.batch.draw(playerTexture, WIDHT - i*40f, HEIGHT - 40f, 40f, 40f)
+            game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
+            for (i in 1..gameLogic.lifes) {
+                game.batch.draw(playerTexture, WIDHT - i * 40f, HEIGHT - 40f, 40f, 40f)
+            }
+            //game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
         }
-
-        //game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
-
+        else{
+            game.screen = EndScreen(game, gameLogic.score)
+        }
         game.batch.end()
     }
 
