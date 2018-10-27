@@ -47,8 +47,8 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         camera.setToOrtho(false, GameScreen.WIDHT, GameScreen.HEIGHT)
 
         assetManager = AssetManager()
-        assetManager.load("spaceship.png", Texture::class.java)
-        assetManager.load("space.png", Texture::class.java)
+        assetManager.load("player.png", Texture::class.java)
+        assetManager.load("space-2.png", Texture::class.java)
         assetManager.load("bluelaser.png", Texture::class.java)
         assetManager.load("redlaser.png", Texture::class.java)
         assetManager.load("squid.png", Texture::class.java)
@@ -62,8 +62,8 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         assetManager.load("kill.wav", Sound::class.java)
         assetManager.load("dead.wav", Sound::class.java)
         assetManager.finishLoading()
-        playerTexture = assetManager.get("spaceship.png")
-        backgroundTexture = assetManager.get("space.png")
+        playerTexture = assetManager.get("player.png")
+        backgroundTexture = assetManager.get("space-2.png")
         bluelaserTexture = assetManager.get("bluelaser.png")
         redlaserTexture = assetManager.get("redlaser.png")
         squidTexture = assetManager.get("squid.png")
@@ -90,13 +90,16 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         game.batch.begin()
         game.batch.disableBlending()
         game.batch.draw(backgroundTexture, 0f, 0f, WIDHT, HEIGHT)
+
         gameLogic.update()
+
         if(gameLogic.lifes > 0) {
             game.batch.enableBlending()
 
             for (element in gameLogic.getAllElements())
                 game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
+            game.font.data.setScale(0.5f, 0.5f)
             game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
             for (i in 1..gameLogic.lifes) {
                 game.batch.draw(playerTexture, WIDHT - i * 40f, HEIGHT - 40f, 40f, 40f)
@@ -106,6 +109,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         else{
             game.screen = EndScreen(game, gameLogic.score)
         }
+        game.font.data.setScale(1f, 1f)
         game.batch.end()
     }
 

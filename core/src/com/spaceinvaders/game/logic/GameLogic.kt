@@ -15,7 +15,6 @@ import kotlinx.coroutines.experimental.sync.withLock
 class GameLogic {
 
     private val enemies: MutableList<Enemy> = mutableListOf()
-    private val player: Player = Player()
     private val playerProjectiles: MutableList<Projectile> = mutableListOf()
     private val enemiesProjectiles: MutableList<Projectile> = mutableListOf()
     private val scoreMutex: Mutex = Mutex()
@@ -26,6 +25,7 @@ class GameLogic {
 
     companion object {
         lateinit var inputHandler: InputHandler
+        var player: Player = Player()
     }
 
     init {

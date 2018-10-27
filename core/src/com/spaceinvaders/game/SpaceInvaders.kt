@@ -15,9 +15,7 @@ class SpaceInvaders : Game() {
 
     override fun create() {
         batch = SpriteBatch()
-        // use LibGDX's default Arial font
-        font = BitmapFont()
-        font.data.setScale(2f,2f)
+        font = BitmapFont(Gdx.files.internal("font.fnt"), Gdx.files.internal("font.png"), false)
         this.setScreen(MenuScreen(this))
     }
 

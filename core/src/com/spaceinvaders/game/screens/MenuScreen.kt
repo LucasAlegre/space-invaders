@@ -14,13 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin
 import com.spaceinvaders.game.SpaceInvaders
 import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
 
 class MenuScreen(val game: SpaceInvaders) : Screen {
 
     private val stage: Stage = Stage()
-    private val textureBackground: Texture = Texture(Gdx.files.internal("space.png"))
+    private val textureBackground: Texture = Texture(Gdx.files.internal("space-1.png"))
     private val menuSong: Music = Gdx.audio.newMusic(Gdx.files.internal("menusong.wav"))
     private val camera: OrthographicCamera = OrthographicCamera()
 
@@ -29,24 +30,17 @@ class MenuScreen(val game: SpaceInvaders) : Screen {
         stage.setDebugAll(true)
         Gdx.input.setInputProcessor(stage)
 
-        var skin = Skin()
-        var tex1 = Texture("alien.png")
-        skin.add("up", TextureRegion(tex1, 0, 0, 200, 100))
-        skin.add("down", TextureRegion(tex1, 0, 96, 200, 100))
 
-        var playButton = ImageTextButton("START", with(ImageTextButton.ImageTextButtonStyle()){
-            up = skin.getDrawable("up")
-            down = skin.getDrawable("down")
-            font = BitmapFont()
-            font.data.setScale(3f)
-            font.color = Color.BLACK
+        var playButton = TextButton("START", with(TextButton.TextButtonStyle()){
+            font = game.font
             this
         })
-        playButton.setPosition(Gdx.graphics.width/2f - 100f,Gdx.graphics.height/2f)
+        playButton.setPosition(Gdx.graphics.width/2f - 120f,Gdx.graphics.height/2f)
         playButton.addListener(object : ClickListener(){
             override fun clicked(event: InputEvent?, x: Float, y: Float) {
                 menuSong.stop()
                 menuSong.dispose()
+                stage.clear()
                 game.screen = GameScreen(game)
             }
         })
