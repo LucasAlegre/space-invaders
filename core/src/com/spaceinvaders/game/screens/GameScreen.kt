@@ -7,15 +7,13 @@ import com.badlogic.gdx.audio.Sound
 import com.badlogic.gdx.graphics.GL20
 import com.badlogic.gdx.graphics.OrthographicCamera
 import com.badlogic.gdx.graphics.Texture
-import com.spaceinvaders.game.logic.GameLogic
+import com.spaceinvaders.game.logic.*
 import com.spaceinvaders.game.SpaceInvaders
 
 //import javax.xml.soap.Text
 
 
 class GameScreen(val game : SpaceInvaders) : Screen {
-
-    private var gameLogic: GameLogic
 
     companion object {
 
@@ -77,7 +75,6 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         shotSound = assetManager.get("shot.mp3")
         killSound = assetManager.get("kill.wav")
 
-        gameLogic = GameLogic()
     }
 
     override fun render(delta: Float) {
@@ -91,23 +88,23 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         game.batch.disableBlending()
         game.batch.draw(backgroundTexture, 0f, 0f, WIDHT, HEIGHT)
 
-        gameLogic.update()
+        update()
 
-        if(gameLogic.lifes > 0) {
+        if(lifes > 0) {
             game.batch.enableBlending()
 
-            for (element in gameLogic.getAllElements())
+            for (element in getAllElements())
                 game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
             game.font.data.setScale(0.5f, 0.5f)
-            game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
-            for (i in 1..gameLogic.lifes) {
+            game.font.draw(game.batch, "Score: ${score}", 5f, HEIGHT - 5f)
+            for (i in 1..lifes) {
                 game.batch.draw(playerTexture, WIDHT - i * 40f, HEIGHT - 40f, 40f, 40f)
             }
             //game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
         }
         else{
-            game.screen = EndScreen(game, gameLogic.score)
+            game.screen = EndScreen(game, score)
         }
         game.font.data.setScale(1f, 1f)
         game.batch.end()

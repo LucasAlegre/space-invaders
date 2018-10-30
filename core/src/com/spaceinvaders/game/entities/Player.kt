@@ -1,7 +1,7 @@
 package com.spaceinvaders.game.entities
 
 import com.badlogic.gdx.Gdx
-import com.spaceinvaders.game.logic.GameLogic
+import com.spaceinvaders.game.logic.*
 import com.spaceinvaders.game.screens.GameScreen
 
 class Player : Entity(originX=GameScreen.WIDHT/2 - 50, originY=0f, width=60f, height=60f, texture = GameScreen.playerTexture){
@@ -15,7 +15,7 @@ class Player : Entity(originX=GameScreen.WIDHT/2 - 50, originY=0f, width=60f, he
     fun shoot() : Projectile?{
         shooter.timeSinceLastShoot += Gdx.graphics.deltaTime
 
-        return if(GameLogic.inputHandler.shoot() && shooter.canShoot())
+        return if(inputHandler.shoot() && shooter.canShoot())
             shooter.shoot(body.x + body.width/2 - 2.5f, body.y + body.height)
         else
             null
@@ -23,15 +23,15 @@ class Player : Entity(originX=GameScreen.WIDHT/2 - 50, originY=0f, width=60f, he
 
     override fun move() {
 
-        if(GameLogic.inputHandler.moveRight())
-            body.x += Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.horizontalSpeed()
-        else if(GameLogic.inputHandler.moveLeft())
-            body.x -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.horizontalSpeed()
+        if(inputHandler.moveRight())
+            body.x += Gdx.graphics.deltaTime * speed * inputHandler.horizontalSpeed()
+        else if(inputHandler.moveLeft())
+            body.x -= Gdx.graphics.deltaTime * speed * inputHandler.horizontalSpeed()
 
-        if(GameLogic.inputHandler.moveUp())
-            body.y += Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.verticalSpeed()
-        else if(GameLogic.inputHandler.moveDown())
-            body.y -= Gdx.graphics.deltaTime * speed * GameLogic.inputHandler.verticalSpeed()
+        if(inputHandler.moveUp())
+            body.y += Gdx.graphics.deltaTime * speed * inputHandler.verticalSpeed()
+        else if(inputHandler.moveDown())
+            body.y -= Gdx.graphics.deltaTime * speed * inputHandler.verticalSpeed()
 
         hasReachedLeftLimit()
         hasReachedRightLimit()
