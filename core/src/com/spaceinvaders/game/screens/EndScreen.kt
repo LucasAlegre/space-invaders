@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent
 import com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
+import com.spaceinvaders.game.logic.restartGame
 
 
 class EndScreen(val game: SpaceInvaders, val score : Int) : Screen {
@@ -40,6 +41,7 @@ class EndScreen(val game: SpaceInvaders, val score : Int) : Screen {
                 menuSong.stop()
                 menuSong.dispose()
                 stage.clear()
+                restartGame()
                 game.screen = GameScreen(game)
             }
         })
