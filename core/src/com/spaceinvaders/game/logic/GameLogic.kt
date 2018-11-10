@@ -104,7 +104,7 @@ tailrec fun checkEnemyPlayerCollision(player: Player, enemies: List<Enemy>){
     if(enemies.isEmpty())
         return
     else{
-        if(collides(enemies.head(), player)){
+        if(enemyCollidesWithPlayer(enemies.head())(player)){
             score -= 100
             lifes--
             player = resetPosition(player)
@@ -151,7 +151,7 @@ suspend fun projectilesCollisions(projectiles: List<Projectile>): List<Projectil
 suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile, player: Player): Projectile {
         return when {
-            collides(projectile, player) -> {
+            projectileCollidesWithPlayer(projectile)(player) -> {
                 async{scoreMutex.withLock {
                     score -= 100
                 }}
@@ -172,7 +172,7 @@ suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Pr
         for(it in enemies){
             var it = it
             when{
-                collides(it, projectile) -> {
+                enemyCollidesWithProjectile(it)(projectile) -> {
                     it = takeShot(it)
                     if(it.shouldDelete){
                         async {scoreMutex.withLock {

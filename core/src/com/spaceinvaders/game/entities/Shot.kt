@@ -8,18 +8,17 @@ import com.spaceinvaders.game.logic.*
 
 
 //// Funções de colisão
-fun collides(enemy:Enemy, player:Player): Boolean {
-    return enemy.body.boundingRectangle.overlaps(player.body.boundingRectangle)
+fun enemyCollidesWithPlayer(enemy:Enemy): (Player) -> (Boolean) {
+    return {player -> enemy.body.boundingRectangle.overlaps(player.body.boundingRectangle)}
 }
 
-fun collides(enemy:Enemy, projectile:Projectile): Boolean {
-    return enemy.body.boundingRectangle.overlaps(projectile.body.boundingRectangle)
+fun enemyCollidesWithProjectile(enemy:Enemy): (Projectile) -> (Boolean) {
+    return {projectile -> enemy.body.boundingRectangle.overlaps(projectile.body.boundingRectangle)}
 }
 
-fun collides(projectile:Projectile, player:Player): Boolean {
-    return projectile.body.boundingRectangle.overlaps(player.body.boundingRectangle)
+fun projectileCollidesWithPlayer(projectile:Projectile): (Player) -> (Boolean) {
+    return {player -> projectile.body.boundingRectangle.overlaps(player.body.boundingRectangle)}
 }
-
 
 fun takeShot(enemy: Enemy) : Enemy {
     enemy.lives--
