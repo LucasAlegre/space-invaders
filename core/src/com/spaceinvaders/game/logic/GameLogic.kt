@@ -2,7 +2,7 @@ package com.spaceinvaders.game.logic
 
 import com.badlogic.gdx.Application
 import com.badlogic.gdx.Gdx
-import com.spaceinvaders.game.entities.*
+//import com.spaceinvaders.game.entities.*
 import com.spaceinvaders.game.input.InputAndroid
 import com.spaceinvaders.game.input.InputDesktop
 import com.spaceinvaders.game.input.InputHandler
@@ -11,6 +11,12 @@ import com.spaceinvaders.game.screens.GameScreen
 import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.sync.Mutex
 import kotlinx.coroutines.experimental.sync.withLock
+
+import com.badlogic.gdx.graphics.Texture
+import com.badlogic.gdx.graphics.g2d.Sprite
+
+import com.spaceinvaders.game.logic.*
+
 
 var enemies: List<Enemy> = listOf<Enemy>()
 var projectiles: List<Projectile> = listOf<Projectile>()
@@ -23,7 +29,7 @@ var inputHandler: InputHandler = if (Gdx.app.type == Application.ApplicationType
     InputDesktop()
 else
     InputAndroid()
-var player: Player = Player()
+var player: Player = makePlayer()
 
 fun <T> List<T>.tail() = drop(1)
 fun <T> List<T>.head() = first()
@@ -33,24 +39,24 @@ fun restartGame(){
     projectiles = listOf()
     lifes = 3
     score = 0
-    player = Player()
+    player = makePlayer()
 }
 
 fun initialEnemies(): List<Enemy>{
     return listOf(
-        Squid(100f, 400f, 1f),
-        Squid(200f, 400f, 4f),
-        Squid(300f, 400f, 2f),
-        Squid(400f, 400f, 0f),
-        Squid(500f, 400f, 3f),
-        Squid(100f, 500f, 3f),
-        Squid(200f, 500f, 2f),
-        Squid(300f, 500f, 0f),
-        Squid(400f, 500f, 4f),
-        Squid(500f, 500f, 1f),
-        Crab(100f, 600f, 1f),
-        Crab(300f, 600f, 2f),
-        Crab(500f, 600f, 0f)
+            makeEnemy(EnemyType.SQUID, 100f, 400f, 1f),
+            makeEnemy(EnemyType.SQUID, 200f, 400f, 4f),
+            makeEnemy(EnemyType.SQUID, 300f, 400f, 2f),
+            makeEnemy(EnemyType.SQUID, 400f, 400f, 0f),
+            makeEnemy(EnemyType.SQUID, 500f, 400f, 3f),
+            makeEnemy(EnemyType.SQUID, 100f, 500f, 3f),
+            makeEnemy(EnemyType.SQUID, 200f, 500f, 2f),
+            makeEnemy(EnemyType.SQUID, 300f, 500f, 0f),
+            makeEnemy(EnemyType.SQUID, 400f, 500f, 4f),
+            makeEnemy(EnemyType.SQUID, 500f, 500f, 1f),
+            makeEnemy(EnemyType.CRAB, 100f, 600f, 1f),
+            makeEnemy(EnemyType.CRAB, 300f, 600f, 2f),
+            makeEnemy(EnemyType.CRAB, 500f, 600f, 0f)
     )
 }
 
@@ -60,7 +66,7 @@ fun checkUFO(enemies: List<Enemy>): List<Enemy>{
     return when {
         timeSinceLastUFO > 10f -> {
             timeSinceLastUFO = 0f
-            enemies + UFO(600f)
+            enemies + makeEnemy(EnemyType.UFO, 0f, 600f, 0f)
         }
         else -> enemies
     }
@@ -74,24 +80,14 @@ fun addEnemies(enemies: List<Enemy>): List<Enemy>{
     else {
         when{
             score <= 500 && enemies.size < 8 ->
-                enemies + listOf(Squid(), Squid(), Squid())
+                enemies + listOf(makeEnemy(EnemyType.SQUID), makeEnemy(EnemyType.SQUID), makeEnemy(EnemyType.SQUID))
             score in 501..2000 && enemies.size < 10 ->
-                enemies + listOf(Crab(), Crab(), Squid())
+                enemies + listOf(makeEnemy(EnemyType.CRAB), makeEnemy(EnemyType.CRAB), makeEnemy(EnemyType.SQUID))
             score > 2000 && enemies.size < 8 ->
-                enemies + listOf(Octopus(), Octopus(), Crab(), Squid())
+                enemies + listOf(makeEnemy(EnemyType.OCTOPUS), makeEnemy(EnemyType.OCTOPUS), makeEnemy(EnemyType.CRAB), makeEnemy(EnemyType.SQUID))
             else -> enemies
         }
     }
-}
-
-fun move(e : Enemy): Enemy{
-    e.move()
-    return e
-}
-
-fun move(e : Projectile): Projectile{
-    e.move()
-    return e
 }
 
 tailrec fun enemiesMove(enemies: List<Enemy>, newEnemies: List<Enemy> = listOf()) : List<Enemy> {
@@ -103,14 +99,15 @@ tailrec fun enemiesMove(enemies: List<Enemy>, newEnemies: List<Enemy> = listOf()
     }
 }
 
-tailrec fun checkEnemyPlayerCollision(player: Player, enemies: List<Entity>){
+tailrec fun checkEnemyPlayerCollision(player: Player, enemies: List<Enemy>){
+    var player = player
     if(enemies.isEmpty())
         return
     else{
-        if(enemies.head().collides(player)){
+        if(collides(enemies.head(), player)){
             score -= 100
             lifes--
-            player.resetPosition()
+            player = resetPosition(player)
             GameScreen.diedSound.play()
         }
         checkEnemyPlayerCollision(player, enemies.tail())
@@ -119,14 +116,14 @@ tailrec fun checkEnemyPlayerCollision(player: Player, enemies: List<Entity>){
 
 fun newProjectiles(player: Player, enemies: List<Enemy>): List<Projectile>{
     val newEnemiesProjectiles = fun (enemies : List<Enemy>) : List<Projectile?>{
-        return enemies.map { it -> it.shoot() }
+        return enemies.map { it -> shoot(it) }
     }
-    return (listOf(player.shoot()) + newEnemiesProjectiles(enemies)).filterNotNull()
+    return (listOf(shoot(player)) + newEnemiesProjectiles(enemies)).filterNotNull()
 }
 
 fun update() {
 
-    player.move()
+    move(player)
 
     enemies = enemiesMove(checkUFO(addEnemies(enemies)))
 
@@ -154,12 +151,12 @@ suspend fun projectilesCollisions(projectiles: List<Projectile>): List<Projectil
 suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile, player: Player): Projectile {
         return when {
-            projectile.collides(player) -> {
+            collides(projectile, player) -> {
                 async{scoreMutex.withLock {
                     score -= 100
                 }}
                 lifes--
-                player.resetPosition()
+                resetPosition(player)
                 GameScreen.diedSound.play()
                 projectile.shouldDelete = true
                 projectile
@@ -173,9 +170,10 @@ suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<P
 suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile) : Projectile {
         for(it in enemies){
+            var it = it
             when{
-                it.collides(projectile) -> {
-                    it.takeShot()
+                collides(it, projectile) -> {
+                    it = takeShot(it)
                     if(it.shouldDelete){
                         async {scoreMutex.withLock {
                             score += it.score
@@ -192,8 +190,8 @@ suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Pr
     return projectiles.map(projectileHit)
 }
 
-fun getAllElements(): List<Entity>{
-    return enemies + projectiles + player
+fun getAllElements(): Triple<Player, List<Projectile>, List<Enemy>>{
+    return Triple(player, projectiles, enemies)
 }
 
 

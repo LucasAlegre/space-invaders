@@ -93,7 +93,13 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         if(lifes > 0) {
             game.batch.enableBlending()
 
-            for (element in getAllElements())
+            val triple = getAllElements()
+            val element = triple.first
+            game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
+            for (element in triple.second)
+                game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
+
+            for (element in triple.third)
                 game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
             game.font.data.setScale(0.5f, 0.5f)
