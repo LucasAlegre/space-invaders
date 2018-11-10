@@ -56,7 +56,7 @@ fun shoot(enemy: Enemy) : Projectile? {
 
     return if(canShoot(enemy)) {
         enemy.timeSinceLastShoot = 0f
-        makeProjectile(enemy.body.x + enemy.body.width / 2 - 2.5f, enemy.body.y + enemy.body.height, enemy.shootSpeed, enemy.shootTexture, -1)
+        makeProjectileDown(makeProjectile(enemy))
     }
     else
         null
@@ -67,7 +67,7 @@ fun shoot(player:Player) :  Projectile? {
 
     return if (inputHandler.shoot() && canShoot(player)){
         player.timeSinceLastShoot = 0f
-        makeProjectile(player.body.x + player.body.width / 2 - 2.5f, player.body.y + player.body.height, player.shootSpeed, player.shootTexture, 1)
+        makeProjectileUp(makeProjectile(player))
     }
     else
         null

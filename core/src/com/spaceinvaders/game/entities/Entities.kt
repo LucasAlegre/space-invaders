@@ -4,8 +4,6 @@ package com.spaceinvaders.game.logic
 import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.screens.GameScreen
-import com.badlogic.gdx.Gdx
-import com.spaceinvaders.game.logic.*
 
 data class Player(val shootSpeed: Float,
                   val shootDelay: Float,
@@ -89,6 +87,18 @@ fun makeEnemy(type: EnemyType):Enemy{
 
 }
 
-fun makeProjectile(x: Float, y: Float, speed: Float, texture: Texture, direction: Int):Projectile{
-    return Projectile(direction, x, y, 5f, 10f, texture, false, speed)
+fun makeProjectileUp(makeP: (Int) -> (Projectile)):Projectile{
+    return makeP(1)
+}
+
+fun makeProjectileDown(makeP: (Int) -> (Projectile)):Projectile{
+    return makeP(-1)
+}
+
+fun makeProjectile(entity: Enemy): (Int) -> (Projectile){
+    return {direction -> Projectile(direction, entity.body.x + entity.body.width / 2 - 2.5f, entity.body.y + entity.body.height, 5f, 10f, entity.shootTexture, false, entity.shootSpeed)}
+}
+
+fun makeProjectile(entity: Player): (Int) -> (Projectile){
+    return {direction -> Projectile(direction, entity.body.x + entity.body.width / 2 - 2.5f, entity.body.y + entity.body.height, 5f, 10f, entity.shootTexture, false, entity.shootSpeed)}
 }
