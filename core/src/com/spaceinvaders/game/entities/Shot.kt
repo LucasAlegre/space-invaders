@@ -6,34 +6,32 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.logic.*
 
-
 //// Funções de colisão
-fun enemyCollidesWithPlayer(enemy:Enemy): (Player) -> (Boolean) {
+fun enemyCollidesWithPlayer(enemy: Enemy): (Player) -> (Boolean) {
     return {player -> enemy.body.boundingRectangle.overlaps(player.body.boundingRectangle)}
 }
 
-fun enemyCollidesWithProjectile(enemy:Enemy): (Projectile) -> (Boolean) {
+fun enemyCollidesWithProjectile(enemy: Enemy): (Projectile) -> (Boolean) {
     return {projectile -> enemy.body.boundingRectangle.overlaps(projectile.body.boundingRectangle)}
 }
 
-fun projectileCollidesWithPlayer(projectile:Projectile): (Player) -> (Boolean) {
+fun projectileCollidesWithPlayer(projectile: Projectile): (Player) -> (Boolean) {
     return {player -> projectile.body.boundingRectangle.overlaps(player.body.boundingRectangle)}
 }
 
 fun takeShot(enemy: Enemy) : Enemy {
     enemy.lives--
     enemy.shouldDelete = enemy.lives == 0
-    return when{
-        enemy.type == EnemyType.CRAB -> {
+    return when(enemy.type){
+        EnemyType.CRAB -> {
             enemy.texture = GameScreen.crabTexture
             enemy
         }
-        enemy.type == EnemyType.OCTOPUS -> {
+        EnemyType.OCTOPUS -> {
             if(enemy.lives == 2)
                 enemy.texture = GameScreen.octopus2Texture
             else
                 enemy.texture = GameScreen.octopusTexture
-
             enemy
         }
         else -> {
@@ -41,7 +39,6 @@ fun takeShot(enemy: Enemy) : Enemy {
         }
     }
 }
-
 
 fun canShoot(player: Player): Boolean{
     return player.timeSinceLastShoot > player.shootDelay

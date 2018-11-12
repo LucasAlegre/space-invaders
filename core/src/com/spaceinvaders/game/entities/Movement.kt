@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.spaceinvaders.game.logic.*
 
 //// Movimentação do projétil
-fun move(projectile:Projectile) : Projectile {
+fun move(projectile: Projectile): Projectile {
     projectile.body.y += projectile.speed * Gdx.graphics.deltaTime * projectile.direction
 
     if(projectile.body.y > GameScreen.HEIGHT || projectile.body.y < 0)
@@ -14,10 +14,8 @@ fun move(projectile:Projectile) : Projectile {
     return projectile
 }
 
-
-
 //// Movimentação do jogador
-fun updateLimits(player : Player) : Player {
+fun updateLimits(player: Player): Player {
     if (player.body.x < 0f)
         player.body.x = 0f
     else if(player.body.x > GameScreen.WIDHT - player.width)
@@ -31,7 +29,7 @@ fun updateLimits(player : Player) : Player {
     return player
 }
 
-fun move(player: Player) : Player {
+fun move(player: Player): Player {
 
     if(inputHandler.moveRight())
         player.body.x += Gdx.graphics.deltaTime * player.speed * inputHandler.horizontalSpeed()
@@ -46,31 +44,29 @@ fun move(player: Player) : Player {
     return updateLimits(player)
 }
 
-fun resetPosition(player:Player):Player{
+fun resetPosition(player: Player): Player{
     player.body.setPosition(player.originX, player.originY)
     return player
 }
 
-
-
 //// Movimentação do inimigo
-fun hasReachedLeftLimit(enemy:Enemy): Boolean {
+fun hasReachedLeftLimit(enemy: Enemy): Boolean {
     return enemy.body.x < 0f
 }
 
-fun hasReachedRightLimit(enemy:Enemy): Boolean  {
+fun hasReachedRightLimit(enemy: Enemy): Boolean  {
     return enemy.body.x > GameScreen.WIDHT - enemy.width
 }
 
-fun hasReachedBottomLimit(enemy:Enemy): Boolean {
+fun hasReachedBottomLimit(enemy: Enemy): Boolean {
     return enemy.body.y < 0f
 }
 
-fun hasReachedUpperLimit(enemy:Enemy): Boolean {
+fun hasReachedUpperLimit(enemy: Enemy): Boolean {
     return enemy.body.y > GameScreen.HEIGHT - enemy.height
 }
 
-fun updateLeftLimit(enemy:Enemy): Enemy {
+fun updateLeftLimit(enemy: Enemy): Enemy {
     if (hasReachedLeftLimit(enemy)) {
         enemy.body.x = 0f
         enemy.horizontalDirection = 1
@@ -78,7 +74,7 @@ fun updateLeftLimit(enemy:Enemy): Enemy {
     return enemy
 }
 
-fun updateRightLimit(enemy:Enemy): Enemy {
+fun updateRightLimit(enemy: Enemy): Enemy {
     if(hasReachedRightLimit(enemy)) {
         enemy.body.x = GameScreen.WIDHT - enemy.width
         enemy.horizontalDirection = -1
@@ -86,7 +82,7 @@ fun updateRightLimit(enemy:Enemy): Enemy {
     return enemy
 }
 
-fun updateBottomLimit(enemy:Enemy): Enemy {
+fun updateBottomLimit(enemy: Enemy): Enemy {
     if (hasReachedBottomLimit(enemy)) {
         enemy.body.y = 0f
         enemy.verticalDirection = 5
@@ -94,7 +90,7 @@ fun updateBottomLimit(enemy:Enemy): Enemy {
     return enemy
 }
 
-fun updateUpperLimit(enemy:Enemy): Enemy {
+fun updateUpperLimit(enemy: Enemy): Enemy {
     if(hasReachedUpperLimit(enemy)) {
         enemy.body.y = GameScreen.HEIGHT - enemy.height
         enemy.verticalDirection = -5
@@ -102,17 +98,15 @@ fun updateUpperLimit(enemy:Enemy): Enemy {
     return enemy
 }
 
-fun move(enemy:Enemy):Enemy{
+fun move(enemy: Enemy): Enemy{
     var enemy = enemy
-    when {
-        enemy.type == EnemyType.SQUID -> {
+    return when (enemy.type){
+        EnemyType.SQUID -> {
             enemy.body.x += Gdx.graphics.deltaTime * enemy.speed * enemy.horizontalDirection
 
-            enemy = updateLeftLimit(enemy)
-            enemy = updateRightLimit(enemy)
-
+            updateLeftLimit(updateRightLimit(enemy))
         }
-        enemy.type == EnemyType.CRAB -> {
+        EnemyType.CRAB -> {
             enemy.body.x += Gdx.graphics.deltaTime * enemy.speed * enemy.horizontalDirection
 
             if(hasReachedLeftLimit(enemy) || hasReachedRightLimit(enemy)) {
@@ -125,8 +119,9 @@ fun move(enemy:Enemy):Enemy{
                 enemy = updateUpperLimit(enemy)
 
             }
+            enemy
         }
-        enemy.type == EnemyType.OCTOPUS -> {
+        EnemyType.OCTOPUS -> {
             enemy.body.x += Gdx.graphics.deltaTime * enemy.speed * enemy.horizontalDirection
 
             if((hasReachedLeftLimit(enemy) || hasReachedRightLimit(enemy)) && enemy.verticalDirection != 0) {
@@ -135,18 +130,19 @@ fun move(enemy:Enemy):Enemy{
 
                 enemy.body.y += Gdx.graphics.deltaTime * enemy.speed * enemy.verticalDirection
 
-                if(hasReachedBottomLimit(enemy)){
+                if (hasReachedBottomLimit(enemy)) {
                     enemy.verticalDirection = 0
                 }
 
             }
+            enemy
         }
-        enemy.type == EnemyType.UFO -> {
+        EnemyType.UFO -> {
             enemy.body.x += Gdx.graphics.deltaTime * enemy.speed * enemy.horizontalDirection
             if(hasReachedRightLimit(enemy)){
                 enemy.shouldDelete = true
             }
+            enemy
         }
     }
-    return enemy
 }

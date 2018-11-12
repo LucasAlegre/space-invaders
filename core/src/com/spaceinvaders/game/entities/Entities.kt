@@ -69,29 +69,29 @@ fun makePlayer():Player{
 }
 
 fun makeEnemy(type: EnemyType, x: Float, y: Float, timeInit: Float):Enemy{
-    return when{
-        type == EnemyType.SQUID -> Enemy(EnemyType.SQUID,100f,50,1,100f,8f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.squidTexture, false)
-        type == EnemyType.CRAB -> Enemy(EnemyType.CRAB,200f,100,2,200f,5f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.crab2Texture, false )
-        type == EnemyType.OCTOPUS -> Enemy(EnemyType.OCTOPUS,250f,200,3,250f,3f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.octopus3Texture, false)
+    return when(type){
+        EnemyType.SQUID -> Enemy(EnemyType.SQUID,100f,50,1,100f,8f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.squidTexture, false)
+        EnemyType.CRAB -> Enemy(EnemyType.CRAB,200f,100,2,200f,5f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.crab2Texture, false )
+        EnemyType.OCTOPUS -> Enemy(EnemyType.OCTOPUS,250f,200,3,250f,3f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.octopus3Texture, false)
         else -> Enemy(EnemyType.UFO, 200f, 150, 1,200f,1f, GameScreen.redlaserTexture, 1, -5, 0f, 0f, y, 140f, 70f, GameScreen.ufoTexture, false)
     }
 
 }
 
 fun makeEnemy(type: EnemyType):Enemy{
-    return when{
-        type == EnemyType.SQUID -> makeEnemy(EnemyType.SQUID, (100..700 step 100).shuffled().first().toFloat(), (300..600 step 100).shuffled().first().toFloat(), (0..7).shuffled().first().toFloat())
-        type == EnemyType.CRAB -> makeEnemy(EnemyType.CRAB, (100..700 step 100).shuffled().first().toFloat(), (400..600 step 100).shuffled().first().toFloat(), (0..4).shuffled().first().toFloat())
+    return when(type){
+        EnemyType.SQUID -> makeEnemy(EnemyType.SQUID, (100..700 step 100).shuffled().first().toFloat(), (300..600 step 100).shuffled().first().toFloat(), (0..7).shuffled().first().toFloat())
+        EnemyType.CRAB -> makeEnemy(EnemyType.CRAB, (100..700 step 100).shuffled().first().toFloat(), (400..600 step 100).shuffled().first().toFloat(), (0..4).shuffled().first().toFloat())
         else -> makeEnemy(EnemyType.OCTOPUS, (100..700 step 100).shuffled().first().toFloat(), (500..600 step 100).shuffled().first().toFloat(), (0..2).shuffled().first().toFloat())
     }
 
 }
 
-fun makeProjectileUp(makeP: (Int) -> (Projectile)):Projectile{
+fun makeProjectileUp(makeP: (Int) -> (Projectile)): Projectile{
     return makeP(1)
 }
 
-fun makeProjectileDown(makeP: (Int) -> (Projectile)):Projectile{
+fun makeProjectileDown(makeP: (Int) -> (Projectile)): Projectile{
     return makeP(-1)
 }
 
