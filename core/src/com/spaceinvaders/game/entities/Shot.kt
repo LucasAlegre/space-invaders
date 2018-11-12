@@ -7,16 +7,28 @@ import com.badlogic.gdx.graphics.g2d.Sprite
 import com.spaceinvaders.game.logic.*
 
 //// Funções de colisão
+fun collides(enemy: Enemy, player: Player): Boolean {
+    return enemy.body.boundingRectangle.overlaps(player.body.boundingRectangle)
+}
+
+fun collides(enemy: Enemy, projectile: Projectile): Boolean {
+    return enemy.body.boundingRectangle.overlaps(projectile.body.boundingRectangle)
+}
+
+fun collides(projectile: Projectile, player: Player): Boolean {
+    return projectile.body.boundingRectangle.overlaps(player.body.boundingRectangle)
+}
+
 fun enemyCollidesWithPlayer(enemy: Enemy): (Player) -> (Boolean) {
-    return {player -> enemy.body.boundingRectangle.overlaps(player.body.boundingRectangle)}
+    return {player -> collides(enemy, player)}
 }
 
 fun enemyCollidesWithProjectile(enemy: Enemy): (Projectile) -> (Boolean) {
-    return {projectile -> enemy.body.boundingRectangle.overlaps(projectile.body.boundingRectangle)}
+    return {projectile -> collides(enemy, projectile)}
 }
 
 fun projectileCollidesWithPlayer(projectile: Projectile): (Player) -> (Boolean) {
-    return {player -> projectile.body.boundingRectangle.overlaps(player.body.boundingRectangle)}
+    return {player -> collides(projectile, player)}
 }
 
 fun takeShot(enemy: Enemy) : Enemy {
