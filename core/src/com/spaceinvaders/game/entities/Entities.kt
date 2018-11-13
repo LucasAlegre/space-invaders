@@ -68,7 +68,7 @@ fun makePlayer():Player{
     return Player(300f, 0.5f, GameScreen.bluelaserTexture, 0f, GameScreen.WIDHT/2 - 50, 0f, 60f, 60f, GameScreen.playerTexture, 200f)
 }
 
-fun makeEnemy(type: EnemyType, x: Float, y: Float, timeInit: Float):Enemy{
+fun makeEnemy(type: EnemyType, x: Float, y: Float, timeInit: Float): Enemy{
     return when(type){
         EnemyType.SQUID -> Enemy(EnemyType.SQUID,100f,50,1,100f,8f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.squidTexture, false)
         EnemyType.CRAB -> Enemy(EnemyType.CRAB,200f,100,2,200f,5f, GameScreen.redlaserTexture, 1, -5, timeInit, x, y, 70f, 70f, GameScreen.crab2Texture, false )

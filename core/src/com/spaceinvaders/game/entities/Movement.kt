@@ -6,42 +6,46 @@ import com.spaceinvaders.game.logic.*
 
 //// Movimentação do projétil
 fun move(projectile: Projectile): Projectile {
+    var projectile = projectile
     projectile.body.y += projectile.speed * Gdx.graphics.deltaTime * projectile.direction
 
-    if(projectile.body.y > GameScreen.HEIGHT || projectile.body.y < 0)
-        projectile.shouldDelete = true
-
-    return projectile
+    return when{
+        projectile.body.y > GameScreen.HEIGHT || projectile.body.y < 0 -> {
+            projectile.shouldDelete = true
+            projectile
+        }
+        else -> projectile
+    }
 }
 
 //// Movimentação do jogador
-fun updateLimits(player: Player): Player {
-    if (player.body.x < 0f)
-        player.body.x = 0f
-    else if(player.body.x > GameScreen.WIDHT - player.width)
-        player.body.x = GameScreen.WIDHT - player.width
+fun updateLimits(player: Player, function: (Float, Float) -> Float): Player {
+    var player = player
 
-    if (player.body.y < 0f)
-        player.body.y = 0f
-    else if(player.body.y > GameScreen.HEIGHT - player.height)
-        player.body.y = GameScreen.HEIGHT - player.height
+    player.body.x = function(player.body.x, GameScreen.WIDHT - player.width)
+    player.body.y = function(player.body.y, GameScreen.HEIGHT - player.height)
 
     return player
 }
 
 fun move(player: Player): Player {
 
-    if(inputHandler.moveRight())
-        player.body.x += Gdx.graphics.deltaTime * player.speed * inputHandler.horizontalSpeed()
-    else if(inputHandler.moveLeft())
-        player.body.x -= Gdx.graphics.deltaTime * player.speed * inputHandler.horizontalSpeed()
+    when{
+        inputHandler.moveRight() -> player.body.x += Gdx.graphics.deltaTime * player.speed * inputHandler.horizontalSpeed()
+        inputHandler.moveLeft() ->  player.body.x -= Gdx.graphics.deltaTime * player.speed * inputHandler.horizontalSpeed()
+    }
+    when{
+        inputHandler.moveUp() -> player.body.y += Gdx.graphics.deltaTime * player.speed * inputHandler.verticalSpeed()
+        inputHandler.moveDown() -> player.body.y -= Gdx.graphics.deltaTime * player.speed * inputHandler.verticalSpeed()
+    }
 
-    if(inputHandler.moveUp())
-        player.body.y += Gdx.graphics.deltaTime * player.speed * inputHandler.verticalSpeed()
-    else if(inputHandler.moveDown())
-        player.body.y -= Gdx.graphics.deltaTime * player.speed * inputHandler.verticalSpeed()
-
-    return updateLimits(player)
+    return updateLimits(player){pos, limit ->
+        when {
+            pos < 0f -> 0f
+            pos > limit -> limit
+            else -> pos
+        }
+    }
 }
 
 fun resetPosition(player: Player): Player{
@@ -110,14 +114,11 @@ fun move(enemy: Enemy): Enemy{
             enemy.body.x += Gdx.graphics.deltaTime * enemy.speed * enemy.horizontalDirection
 
             if(hasReachedLeftLimit(enemy) || hasReachedRightLimit(enemy)) {
-                enemy = updateLeftLimit(enemy)
-                enemy = updateRightLimit(enemy)
+                enemy = updateLeftLimit(updateRightLimit(enemy))
 
                 enemy.body.y += Gdx.graphics.deltaTime * enemy.speed * enemy.verticalDirection
 
-                enemy = updateBottomLimit(enemy)
-                enemy = updateUpperLimit(enemy)
-
+                enemy = updateBottomLimit(updateUpperLimit(enemy))
             }
             enemy
         }
@@ -125,8 +126,7 @@ fun move(enemy: Enemy): Enemy{
             enemy.body.x += Gdx.graphics.deltaTime * enemy.speed * enemy.horizontalDirection
 
             if((hasReachedLeftLimit(enemy) || hasReachedRightLimit(enemy)) && enemy.verticalDirection != 0) {
-                enemy = updateLeftLimit(enemy)
-                enemy = updateRightLimit(enemy)
+                enemy = updateLeftLimit(updateRightLimit(enemy))
 
                 enemy.body.y += Gdx.graphics.deltaTime * enemy.speed * enemy.verticalDirection
 

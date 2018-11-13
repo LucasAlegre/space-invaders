@@ -23,14 +23,6 @@ fun enemyCollidesWithPlayer(enemy: Enemy): (Player) -> (Boolean) {
     return {player -> collides(enemy, player)}
 }
 
-fun enemyCollidesWithProjectile(enemy: Enemy): (Projectile) -> (Boolean) {
-    return {projectile -> collides(enemy, projectile)}
-}
-
-fun projectileCollidesWithPlayer(projectile: Projectile): (Player) -> (Boolean) {
-    return {player -> collides(projectile, player)}
-}
-
 fun takeShot(enemy: Enemy) : Enemy {
     enemy.lives--
     enemy.shouldDelete = enemy.lives == 0

@@ -91,26 +91,27 @@ fun addEnemies(enemies: List<Enemy>): List<Enemy>{
 }
 
 tailrec fun enemiesMove(enemies: List<Enemy>, newEnemies: List<Enemy> = listOf()) : List<Enemy> {
-    return if(enemies.isEmpty()) {
-        newEnemies
-    }
-    else{
-        enemiesMove(enemies.tail(), newEnemies + move(enemies.head()))
+    return when{
+        enemies.isEmpty() -> newEnemies
+        else ->  enemiesMove(enemies.tail(), newEnemies + move(enemies.head()))
     }
 }
 
-tailrec fun checkEnemyPlayerCollision(player: Player, enemies: List<Enemy>){
+tailrec fun checkEnemyPlayerCollision(player: Player, enemies: List<Enemy>): Player{
     var player = player
-    if(enemies.isEmpty())
-        return
-    else{
-        if(enemyCollidesWithPlayer(enemies.head())(player)){
-            score -= 100
-            lifes--
-            player = resetPosition(player)
-            GameScreen.diedSound.play()
+    return when{
+        enemies.isEmpty() -> player
+        else -> {
+            if(enemyCollidesWithPlayer(enemies.head())(player)){
+                GameScreen.diedSound.play()
+                score -= 100
+                lifes--
+                resetPosition(player)
+            }
+            else {
+                checkEnemyPlayerCollision(player, enemies.tail())
+            }
         }
-        checkEnemyPlayerCollision(player, enemies.tail())
     }
 }
 
@@ -123,15 +124,11 @@ fun newProjectiles(player: Player, enemies: List<Enemy>): List<Projectile>{
 
 fun update() {
 
-    move(player)
+    enemies = enemiesMove(checkUFO(addEnemies(enemies))).filter{ !it.shouldDelete }
 
-    enemies = enemiesMove(checkUFO(addEnemies(enemies)))
-
-    checkEnemyPlayerCollision(player, enemies)
+    player = checkEnemyPlayerCollision(move(player), enemies)
 
     projectiles = (projectiles + newProjectiles(player, enemies)).filter { !it.shouldDelete }.map { it -> move(it) }
-
-    enemies = enemies.filter{ !it.shouldDelete }
 
     runBlocking{
         projectiles = projectilesCollisions(projectiles)
@@ -150,8 +147,9 @@ suspend fun projectilesCollisions(projectiles: List<Projectile>): List<Projectil
 
 suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile, player: Player): Projectile {
+        val projectCollidesPlayer = {projectile: Projectile -> collides(projectile, player)}
         return when {
-            projectileCollidesWithPlayer(projectile)(player) -> {
+            projectCollidesPlayer(projectile) -> {
                 async{scoreMutex.withLock {
                     score -= 100
                 }}
@@ -169,11 +167,11 @@ suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<P
 
 suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile) : Projectile {
-        for(it in enemies){
-            var it = it
+        val enemyCollidesWithProjectile = { enemy: Enemy -> collides(enemy, projectile)}
+        enemies.forEach{it ->
             when{
-                enemyCollidesWithProjectile(it)(projectile) -> {
-                    it = takeShot(it)
+                enemyCollidesWithProjectile(it) -> {
+                    takeShot(it)
                     if(it.shouldDelete){
                         async {scoreMutex.withLock {
                             score += it.score
@@ -186,7 +184,6 @@ suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Pr
         }
         return projectile
     }
-
     return projectiles.map(projectileHit)
 }
 
