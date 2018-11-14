@@ -40,6 +40,8 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         lateinit var shotSound: Sound
     }
 
+    var elements: Triple<Player, List<Projectile>, List<Enemy>>
+
     init {
         camera = OrthographicCamera()
         camera.setToOrtho(false, GameScreen.WIDHT, GameScreen.HEIGHT)
@@ -75,6 +77,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         shotSound = assetManager.get("shot.mp3")
         killSound = assetManager.get("kill.wav")
 
+        elements = Triple(makePlayer(), listOf(), listOf())
     }
 
     override fun render(delta: Float) {
@@ -88,18 +91,17 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         game.batch.disableBlending()
         game.batch.draw(backgroundTexture, 0f, 0f, WIDHT, HEIGHT)
 
-        update()
+        elements = runGameStep(elements.first, elements.second, elements.third)
 
         if(lifes > 0) {
             game.batch.enableBlending()
 
-            val triple = getAllElements()
-            val element = triple.first
+            val element = elements.first
             game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
-            for (element in triple.second)
+            for (element in elements.second)
                 game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
-            for (element in triple.third)
+            for (element in elements.third)
                 game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
             game.font.data.setScale(0.5f, 0.5f)

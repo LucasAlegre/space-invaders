@@ -16,10 +16,7 @@ import com.badlogic.gdx.graphics.Texture
 import com.badlogic.gdx.graphics.g2d.Sprite
 
 import com.spaceinvaders.game.logic.*
-
-
-var enemies: List<Enemy> = listOf<Enemy>()
-var projectiles: List<Projectile> = listOf<Projectile>()
+import sun.audio.AudioPlayer
 
 val scoreMutex: Mutex = Mutex()
 var timeSinceLastUFO: Float = 0f
@@ -29,17 +26,17 @@ var inputHandler: InputHandler = if (Gdx.app.type == Application.ApplicationType
     InputDesktop()
 else
     InputAndroid()
-var player: Player = makePlayer()
 
 fun <T> List<T>.tail() = drop(1)
 fun <T> List<T>.head() = first()
 
-fun restartGame(){
-    enemies = listOf()
-    projectiles = listOf()
-    lifes = 3
-    score = 0
-    player = makePlayer()
+fun runGameStep(player: Player, projectiles: List<Projectile>, enemies: List<Enemy>):  Triple<Player, List<Projectile>, List<Enemy>>{
+
+    return Triple(
+            checkEnemyPlayerCollision(move(player), enemies),
+            processProjectiles(projectiles, player, enemies),
+            enemiesMove(checkUFO(addEnemies(enemies))).filter{ !it.shouldDelete }
+    )
 }
 
 fun initialEnemies(): List<Enemy>{
@@ -122,30 +119,23 @@ fun newProjectiles(player: Player, enemies: List<Enemy>): List<Projectile>{
     return (listOf(shoot(player)) + newEnemiesProjectiles(enemies)).filterNotNull()
 }
 
-fun update() {
-
-    enemies = enemiesMove(checkUFO(addEnemies(enemies))).filter{ !it.shouldDelete }
-
-    player = checkEnemyPlayerCollision(move(player), enemies)
-
-    projectiles = (projectiles + newProjectiles(player, enemies)).filter { !it.shouldDelete }.map { it -> move(it) }
-
-    runBlocking{
-        projectiles = projectilesCollisions(projectiles)
+fun processProjectiles(projectiles: List<Projectile>, player: Player, enemies: List<Enemy>): List<Projectile> {
+    return runBlocking {
+        projectilesCollisions((projectiles + newProjectiles(player, enemies)).filter { !it.shouldDelete }.map { it -> move(it) }, player, enemies)
     }
 }
 
-suspend fun projectilesCollisions(projectiles: List<Projectile>): List<Projectile> = coroutineScope {
+suspend fun projectilesCollisions(projectiles: List<Projectile>, player: Player, enemies: List<Enemy>): List<Projectile> = coroutineScope {
 
     val isPlayerProjectile = fun (projectile: Projectile): Boolean { return projectile.direction > 0 }
 
-    val enemiesProjectiles = async { enemiesProjectilesCollisions(projectiles.filterNot(isPlayerProjectile)) }
-    val playerProjectiles = async { playerProjectilesCollisions(projectiles.filter(isPlayerProjectile)) }
+    val enemiesProjectiles = async { enemiesProjectilesCollisions(projectiles.filterNot(isPlayerProjectile), player) }
+    val playerProjectiles = async { playerProjectilesCollisions(projectiles.filter(isPlayerProjectile), enemies) }
 
     return@coroutineScope enemiesProjectiles.await() + playerProjectiles.await()
 }
 
-suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
+suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>, player: Player) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile, player: Player): Projectile {
         val projectCollidesPlayer = {projectile: Projectile -> collides(projectile, player)}
         return when {
@@ -165,7 +155,7 @@ suspend fun enemiesProjectilesCollisions(projectiles: List<Projectile>) : List<P
     return projectiles.map { it -> projectileHit(it, player) }
 }
 
-suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Projectile> {
+suspend fun playerProjectilesCollisions(projectiles: List<Projectile>, enemies: List<Enemy>) : List<Projectile> {
     val projectileHit = fun (projectile: Projectile) : Projectile {
         val enemyCollidesWithProjectile = { enemy: Enemy -> collides(enemy, projectile)}
         enemies.forEach{it ->
@@ -187,8 +177,7 @@ suspend fun playerProjectilesCollisions(projectiles: List<Projectile>) : List<Pr
     return projectiles.map(projectileHit)
 }
 
-fun getAllElements(): Triple<Player, List<Projectile>, List<Enemy>>{
-    return Triple(player, projectiles, enemies)
+fun restartGame(){
+    lifes = 3
+    score = 0
 }
-
-
