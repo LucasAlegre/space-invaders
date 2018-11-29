@@ -16,6 +16,7 @@ import com.spaceinvaders.game.SpaceInvaders
 class GameScreen(val game : SpaceInvaders) : Screen {
 
     private var gameLogic: GameLogic
+    private var seconds: Long
 
     companion object {
 
@@ -78,6 +79,8 @@ class GameScreen(val game : SpaceInvaders) : Screen {
         killSound = assetManager.get("kill.wav")
 
         gameLogic = GameLogic()
+
+        seconds = System.currentTimeMillis()
     }
 
     override fun render(delta: Float) {
@@ -107,7 +110,7 @@ class GameScreen(val game : SpaceInvaders) : Screen {
             //game.font.draw(game.batch, "Score: ${gameLogic.score} X:${Gdx.input.accelerometerX} Y:${Gdx.input.accelerometerY}", 5f, HEIGHT - 5f)
         }
         else{
-            game.screen = EndScreen(game, gameLogic.score)
+            game.screen = EndScreen(game, gameLogic.score, (System.currentTimeMillis() - seconds)/1000)
         }
         game.font.data.setScale(1f, 1f)
         game.batch.end()

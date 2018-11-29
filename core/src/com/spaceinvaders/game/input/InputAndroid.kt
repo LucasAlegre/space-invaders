@@ -12,7 +12,7 @@ class InputAndroid : InputHandler {
 
     private val accelerometerAvailable: Boolean = Gdx.input.isPeripheralAvailable(Input.Peripheral.Accelerometer)
     private var touchPos: Vector3 = Vector3()
-    private val maxDistance: Float = 500f * Gdx.graphics.deltaTime
+    private val maxDistance: Float = 200f * Gdx.graphics.deltaTime
 
     fun getDelta(): Vector2{
         if(Gdx.input.isTouched){
