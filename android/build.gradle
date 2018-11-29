@@ -17,7 +17,7 @@ android {
         exclude 'META-INF/robovm/ios/robovm.xml'
     }
     defaultConfig {
-        applicationId "com.spaceinvaders.game"
+        applicationId "com.spaceinvaders.game3"
         minSdkVersion 9
         targetSdkVersion 28
         versionCode 1

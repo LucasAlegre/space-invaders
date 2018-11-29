@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener
 
 
-class EndScreen(val game: SpaceInvaders, val score : Int) : Screen {
+class EndScreen(val game: SpaceInvaders, val score : Int, val seconds: Long) : Screen {
 
     private val stage: Stage
     private val font: BitmapFont
@@ -60,6 +60,7 @@ class EndScreen(val game: SpaceInvaders, val score : Int) : Screen {
         game.batch.enableBlending()
         game.font.data.setScale(0.5f, 0.5f)
         game.font.draw(game.batch, "Final score: ${score}", 250f, GameScreen.HEIGHT - 200f)
+        game.font.draw(game.batch, "Time: ${seconds}", 250f, GameScreen.HEIGHT - 100f)
         game.font.data.setScale(1f, 1f)
         game.batch.end()
 

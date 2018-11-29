@@ -15,6 +15,7 @@ import com.spaceinvaders.game.SpaceInvaders
 import com.badlogic.gdx.scenes.scene2d.ui.Touchpad.TouchpadStyle
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 
 
@@ -22,12 +23,14 @@ class GameScreen(val game: SpaceInvaders): Screen {
 
     private var gameLogic: GameLogic
     private var stage: Stage
+    private var seconds: Long
 
     companion object {
 
         lateinit var camera: OrthographicCamera
             private set
         lateinit var touchpad: Touchpad
+        lateinit var shootBt: ImageButton
 
         const val WIDHT: Float = 800f
         const val HEIGHT: Float = 800f
@@ -103,10 +106,16 @@ class GameScreen(val game: SpaceInvaders): Screen {
         touchpad = Touchpad(10f, touchpadStyle)
         touchpad.setBounds(10f, 10f, 250f, 250f)
 
+        shootBt = ImageButton(touchKnobDraw)
+        shootBt.setBounds(520f, 10f, 200f, 200f)
+
         stage.addActor(touchpad)
+        stage.addActor(shootBt)
         Gdx.input.setInputProcessor(stage)
 
         gameLogic = GameLogic()
+
+        seconds = System.currentTimeMillis()
     }
 
     override fun render(delta: Float) {
@@ -129,14 +138,14 @@ class GameScreen(val game: SpaceInvaders): Screen {
                 game.batch.draw(element.texture, element.body.x, element.body.y, element.body.width, element.body.height)
 
             game.font.data.setScale(0.5f, 0.5f)
-            //game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
+            game.font.draw(game.batch, "Score: ${gameLogic.score}", 5f, HEIGHT - 5f)
             for (i in 1..gameLogic.lifes) {
                 game.batch.draw(playerTexture, WIDHT - i * 40f, HEIGHT - 40f, 40f, 40f)
             }
-            game.font.draw(game.batch, " X:${touchpad.knobX} Y:${touchpad.knobY}", 5f, HEIGHT - 5f)
+            //game.font.draw(game.batch, " X:${touchpad.knobX} Y:${touchpad.knobY}", 5f, HEIGHT - 5f)
         }
         else{
-            game.screen = EndScreen(game, gameLogic.score)
+            game.screen = EndScreen(game, gameLogic.score, (System.currentTimeMillis() - seconds)/1000)
         }
         game.font.data.setScale(1f, 1f)
         game.batch.end()

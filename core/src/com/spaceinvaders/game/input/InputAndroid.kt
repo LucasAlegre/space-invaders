@@ -26,14 +26,14 @@ class InputAndroid : InputHandler {
     }
 
     override fun horizontalSpeed(): Float {
-        return GameScreen.touchpad.knobPercentX * 2
+        return GameScreen.touchpad.knobPercentX * 2.5f
     }
 
     override fun verticalSpeed(): Float {
-        return GameScreen.touchpad.knobPercentY * 2
+        return GameScreen.touchpad.knobPercentY * 2.5f
     }
 
     override fun shoot(): Boolean{
-        return Gdx.input.isTouched
+        return GameScreen.shootBt.isPressed
     }
 }
